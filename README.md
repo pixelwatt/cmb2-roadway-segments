@@ -1,5 +1,7 @@
 # CMB2 Roadway Segments
 
+![In Action](https://pixelwatt.com/assets/snapmap.gif)
+
 This plugin adds a new CMB2 fieldtype for drawing roadway segments onto a map and provides a shortcode for display.
 
 ## Description
