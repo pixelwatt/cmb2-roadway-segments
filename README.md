@@ -1,4 +1,4 @@
-=== CMB2 Roadway Segments ===
+# CMB2 Roadway Segments
 Contributors: pixelwatt
 Donate link: https://pixelwatt.com
 Tags: cmb2, maps
@@ -10,7 +10,7 @@ License URI: http://www.gnu.org/licenses/gpl-2.0.html
 
 This plugin adds a new CMB2 fieldtype for drawing roadway segments onto a map and provides a shortcode for display.
 
-== Description ==
+## Description
 
 This plugin extends CMB2 by adding a new fieldtype called 'snapmap' that allows the user to highlight segments of roadway using Google's snap-to-road API. It also allows the user to drop a map pin in the same field. This data can then be displayed on the front-end using the `[snapmap]` shortcode.
 
@@ -21,13 +21,13 @@ The Google Maps API key must have access to the following APIs:
 * Google Maps Roads API
 * Google Places API Web Service 
 
-= Features =
+### Features
 
 * Allows developers to integrate Google Maps with Wordpress via CMB2.
 * Allows site admins to provide custom maps styles and specify which map controls to include on the front-end.
 * Provides an option to exclude the Google Maps JS API if already loaded.
 
-= Adding to CMB2 =
+### Adding to CMB2
 
 `$cmb_demo->add_field( array(
 	'name' => 'Segment',
@@ -47,7 +47,7 @@ The Google Maps API key must have access to the following APIs:
     	'type' => 'snapmap',
 ) );`
 
-= Displaying =
+### Displaying
 
 Use the `[snapmap]` shortcode to display the map on the front-end. The shortcode accepts the following arguments:
 
@@ -55,30 +55,30 @@ Use the `[snapmap]` shortcode to display the map on the front-end. The shortcode
 * **height:** Specify a height for the map (defaults to 400px)
 * **zoom:** Specify the map zoom level to start on (defaults to 16)
 
-== Screenshots ==
+## Screenshots
 
 1. Plugin settings.
-1. The CMB2 field.
-1. Front-end display via shortcode.
+2. The CMB2 field.
+3. Front-end display via shortcode.
 
-== Installation ==
+## Installation
 
 1. Upload `cmb2-roadway-segments.php` to the `/wp-content/plugins/` directory
-1. Activate the plugin through the 'Plugins' menu in WordPress
-1. Add a snapmap field to a CMB2 metabox.
-1. Place `[snapmap]` anywhere in a post's content to render a map.
+2. Activate the plugin through the 'Plugins' menu in WordPress
+3. Add a snapmap field to a CMB2 metabox.
+4. Place `[snapmap]` anywhere in a post's content to render a map.
 
-== Frequently Asked Questions ==
+## Frequently Asked Questions
 
-= Does this plugin support custom map markers? =
+### Does this plugin support custom map markers?
 
 Not yet, but it will.
 
-= Can I display a map of all map markers? =
+### Can I display a map of all map markers?
 
 Also not yet, but this is an upcoming feature.
 
-== Changelog ==
+## Changelog
 
-= 0.9.0 =
+### 0.9.0
 * Initial release.
