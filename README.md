@@ -57,7 +57,7 @@ Use the `[snapmap]` shortcode to display the map on the front-end. The shortcode
 
 ## Installation
 
-1. Upload `cmb2-roadway-segments.php` to the `/wp-content/plugins/` directory
+1. Upload the `cmb2-roadway-segments` folder to the `/wp-content/plugins/` directory
 2. Activate the plugin through the 'Plugins' menu in WordPress
 3. Add a snapmap field to a CMB2 metabox.
 4. Place `[snapmap]` anywhere in a post's content to render a map.
