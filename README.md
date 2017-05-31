@@ -1,12 +1,4 @@
 # CMB2 Roadway Segments
-Contributors: pixelwatt
-Donate link: https://pixelwatt.com
-Tags: cmb2, maps
-Requires at least: 4.7.5
-Tested up to: 4.7.5
-Stable tag: 0.9.0
-License: GPLv2 or later
-License URI: http://www.gnu.org/licenses/gpl-2.0.html
 
 This plugin adds a new CMB2 fieldtype for drawing roadway segments onto a map and provides a shortcode for display.
 
