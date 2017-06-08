@@ -58,6 +58,11 @@ register_deactivation_hook( __FILE__, 'deactivate_cmb2_roadway_segments' );
 require plugin_dir_path( __FILE__ ) . 'includes/class-cmb2-roadway-segments.php';
 
 /**
+ * Include template tags
+ */
+include_once( plugin_dir_path( __FILE__ ) . 'public/template-tags.php' );
+
+/**
  * Begins execution of the plugin.
  *
  * Since everything within the plugin is registered via hooks,
