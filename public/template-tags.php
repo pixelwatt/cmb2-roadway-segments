@@ -5,7 +5,7 @@ if ( ! defined( 'ABSPATH' ) ) {
 }
 
 if ( ! function_exists( 'snapmap_build_single' ) ) {
-	function snapmap_build_single($id='',$width='100%',$height='400px',$zoom='16') {
+	function snapmap_build_single($id='',$width='100%',$height='400px',$zoom='16', $center=false, $marker=false, $mapquery=false, $mapstyle=false) {
 	    $plugin_options = get_option( 'cmb2-roadway-segments' );
 	    
 	    if (empty($id)) {
@@ -31,7 +31,12 @@ if ( ! function_exists( 'snapmap_build_single' ) ) {
             
             $map_prefix = get_post_meta( $id, 'cmb2_roadway_segments_prefix', true );
             
-            $location = get_post_meta( $id, $map_prefix, true );
+            if (!empty($mapquery)) {
+                $locations = get_posts($mapquery);
+            } else {
+                $location = get_post_meta( $id, $map_prefix, true );
+            }
+            
             
             $output .= '
                 <div id="map" style="width: '.$width.'; height: '.$height.'; margin-bottom: 30px;"></div>
@@ -42,7 +47,7 @@ if ( ! function_exists( 'snapmap_build_single' ) ) {
                 function initMap() {
                 <!-- / Styles a map in night mode. -->
                 var map = new google.maps.Map(document.getElementById("map"), {
-                center: {lat: '.$location[lat].', lng: '.$location[lng].'},
+                '.( $center ? 'center: {lat: '.$center[lat].', lng: '.$center[lng].'},' : 'center: {lat: '.$location[lat].', lng: '.$location[lng].'},' ).'
                 zoom: '.$zoom.',
                 scrollwheel: false,
                 '.( $controls['maptype'] ? 'mapTypeControl: true,' : 'mapTypeControl: false,' ).'
@@ -52,13 +57,26 @@ if ( ! function_exists( 'snapmap_build_single' ) ) {
                 rotateControl: false'.( !empty($styles) ? ',
                 ' : '' );
                 
-                if (!empty($styles)) {
+                if ($mapstyle) {
+                    $output .= 'styles: '.$mapstyle;
+                } elseif (!empty($styles)) {
                     $output .= 'styles: '.$styles;
                 }
                 
                 $output .= '});';
                 
-            
+                
+                
+                if ($marker) {
+                    $output .= '
+                        var image = {
+                        url: \''.$marker['url'].'\',
+                        size: new google.maps.Size('.$marker['size'].'),
+                        origin: new google.maps.Point('.$marker['origin'].'),
+                        anchor: new google.maps.Point('.$marker['anchor'].')
+                        };
+                    ';
+                }
                 
                 
                 if (!empty($location['array'])) {
@@ -77,7 +95,23 @@ if ( ! function_exists( 'snapmap_build_single' ) ) {
                 
                 $output .= 'var locations = [';
                 
-                $output .= '[\''.addslashes($location[tooltip]).'\','.$location[lat].', '.$location[lng].', \'1\']';
+                if ($mapquery) {
+                    
+                    foreach ($locations as $pin) {
+                        $map_prefix = get_post_meta( $pin->ID, 'cmb2_roadway_segments_prefix', true );
+                        $place = get_post_meta( $pin->ID, $map_prefix, true );
+                        $i = 1;
+                        if (!empty($place)) {
+                            $output .= '[\''.addslashes($place[tooltip]).'\','.$place[lat].', '.$place[lng].', \''.$i.'\'],';
+                            $i++;
+                        }
+                    }
+                    
+                } else {
+                
+                    $output .= '[\''.addslashes($location[tooltip]).'\','.$location[lat].', '.$location[lng].', \'1\']';
+                
+                }
                 
                 $output .= '
                 ];
@@ -91,6 +125,7 @@ if ( ! function_exists( 'snapmap_build_single' ) ) {
                   marker = new google.maps.Marker({
                     position: new google.maps.LatLng(locations[i][1], locations[i][2]),
                     map: map,
+                    '.( $marker ? 'icon: image,' : '' ).'
                     animation: google.maps.Animation.DROP
                   });
                 
