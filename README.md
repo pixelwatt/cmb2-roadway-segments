@@ -21,33 +21,9 @@ The Google Maps API key must have access to the following APIs:
 * Allows site admins to provide custom maps styles and specify which map controls to include on the front-end.
 * Provides an option to exclude the Google Maps JS API if already loaded.
 
-### Adding to CMB2
+### Usage
 
-`$cmb_demo->add_field( array(
-	'name' => 'Segment',
-    	'desc' => '',
-    	'id' => $prefix . 'segment',
-    'limit_drawing' => false,
-    	'type' => 'snapmap',
-) );`
-
-...or to only allow map markers (disable segments), set 'limit_drawing' to true...
-
-`$cmb_demo->add_field( array(
-	'name' => 'Segment',
-    	'desc' => '',
-    	'id' => $prefix . 'segment',
-    'limit_drawing' => true,
-    	'type' => 'snapmap',
-) );`
-
-### Displaying
-
-Use the `[snapmap]` shortcode to display the map on the front-end. The shortcode accepts the following arguments:
-
-* **width:** Specify a width for the map (defaults to 100%)
-* **height:** Specify a height for the map (defaults to 400px)
-* **zoom:** Specify the map zoom level to start on (defaults to 16)
+[Visit the wiki](https://github.com/pixelwatt/cmb2-roadway-segments/wiki) for documentation about adding the field to CMB2 and displaying maps on your site.
 
 ## Screenshots
 
@@ -66,11 +42,11 @@ Use the `[snapmap]` shortcode to display the map on the front-end. The shortcode
 
 ### Does this plugin support custom map markers?
 
-Not yet, but it will.
+Yes, but only by using the template tag.
 
 ### Can I display a map of all map markers?
 
-Also not yet, but this is an upcoming feature.
+Also yes, but only by using the template tag.
 
 ## Changelog
 
