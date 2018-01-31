@@ -392,7 +392,7 @@ class Cmb2_Roadway_Segments_Public {
                             drawingControlOptions: {
                               position: google.maps.ControlPosition.TOP_LEFT,
                               
-                              '.( $field->args['limit_drawing'] ? 'drawingModes: [\'marker\']' : 'drawingModes: [\'marker\', \'polyline\']' ).'
+                              '.( isset($field->args['limit_drawing']) ? 'drawingModes: [\'marker\']' : 'drawingModes: [\'marker\', \'polyline\']' ).'
                             },
                             polylineOptions: {
                               strokeColor: \'#696969\',
@@ -429,33 +429,56 @@ class Cmb2_Roadway_Segments_Public {
                       var pathValues = [];
                       for (var i = 0; i < path.getLength(); i++) {
                         pathValues.push(path.getAt(i).toUrlValue());
+                      }';
+
+                      if ( isset($field->args['disable_snap']) ) {
+                        echo '
+                            if (typeof snappedPolyline !== \'undefined\') { snappedPolyline.setMap(null); } 
+                            processSnapToRoadResponse(path);
+                            drawSnappedPolyline();
+                        ';
+                      } else {
+                        echo '
+                            jQuery.get(\'https://roads.googleapis.com/v1/snapToRoads\', {
+                                interpolate: true,
+                                key: apiKey,
+                                path: pathValues.join(\'|\')
+                              }, function(data) {
+                                if (typeof snappedPolyline !== \'undefined\') { snappedPolyline.setMap(null); }
+                                processSnapToRoadResponse(data);
+                                drawSnappedPolyline();
+                              });
+                        ';
                       }
+
+                      echo '
                     
-                      jQuery.get(\'https://roads.googleapis.com/v1/snapToRoads\', {
-                        interpolate: true,
-                        key: apiKey,
-                        path: pathValues.join(\'|\')
-                      }, function(data) {
-                        if (typeof snappedPolyline !== \'undefined\') { snappedPolyline.setMap(null); }
-                        processSnapToRoadResponse(data);
-                        drawSnappedPolyline();
-                      });
+                      
                       
                     }
                     
                     // Store snapped polyline returned by the snap-to-road service.
-                    function processSnapToRoadResponse(data) {
-                      snappedCoordinates = [];
-                      placeIdArray = [];
-                      for (var i = 0; i < data.snappedPoints.length; i++) {
-                        var latlng = new google.maps.LatLng(
-                            data.snappedPoints[i].location.latitude,
-                            data.snappedPoints[i].location.longitude);
-                        snappedCoordinates.push(latlng);
-                        placeIdArray.push(data.snappedPoints[i].placeId);
+                    function processSnapToRoadResponse(data) {';
+                      if ( isset($field->args['disable_snap']) ) {
+                        echo '
+                            snappedCoordinates = data;
+                        ';
+                      } else {
+                        echo '
+                            snappedCoordinates = [];
+                          placeIdArray = [];
+                          for (var i = 0; i < data.snappedPoints.length; i++) {
+                            var latlng = new google.maps.LatLng(
+                                data.snappedPoints[i].location.latitude,
+                                data.snappedPoints[i].location.longitude);
+                            snappedCoordinates.push(latlng);
+                            placeIdArray.push(data.snappedPoints[i].placeId);
+                          }
+                        ';
                       }
                       
-                      jQuery("textarea[name=\''.$field->args['id'].'[array]\']").val(JSON.stringify(snappedCoordinates));
+                      echo '
+                      jQuery("textarea[name=\''.$field->args['id'].'[array]\']").val('.( isset($field->args['disable_snap']) ? 'JSON.stringify(snappedCoordinates.b)' : 'JSON.stringify(snappedCoordinates)' ).');
                     }
                     
                     // Draws the snapped polyline (after processing snap-to-road response).
@@ -575,21 +598,23 @@ class Cmb2_Roadway_Segments_Public {
                     </div>
                 	
                 	
-                    	<?php 
-                        if ($field->args['limit_drawing']) { 
-                            //Do nothing
-                        } else { ?>
-                            <div class="marker-lat-field"><p><label for="<?php echo $field_type->_id( '_array' ); ?>">Processed Road Segment JSON (Will refresh on save is using manual entry)</label></p>
-                            		<?php echo $field_type->textarea( array(
-                            			'name'  => $field_type->_name( '[array]' ),
-                            			'id'    => $field_type->_id( '_array' ),
-                            			'value' => $value['array'],
-                            			'desc'  => ''
-                            		) ); ?>
-                            </div>
-                            	
-                    	<?php 
-                        	} 
+                	<?php 
+                    if (isset($field->args['limit_drawing'])) { 
+                        //Do nothing
+                    } else { ?>
+                        <div class="marker-lat-field"><p><label for="<?php echo $field_type->_id( '_array' ); ?>">Processed Road Segment JSON</label></p>
+                        		<?php echo $field_type->textarea( array(
+                        			'name'  => $field_type->_name( '[array]' ),
+                        			'id'    => $field_type->_id( '_array' ),
+                        			'value' => $value['array'],
+                        			'desc'  => '',
+                        		) ); ?>
+                        </div>
+
+                        <div class="marker-lat-field"><p>Roadway snapping is <strong><?php echo ( isset($field->args['disable_snap']) ? 'Disabled' : 'Enabled' ); ?></strong></p></div>
+                        	
+                	<?php 
+                    	} 
                     ?>
                     
                     

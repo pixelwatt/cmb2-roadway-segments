@@ -74,6 +74,10 @@ Also not yet, but this is an upcoming feature.
 
 ## Changelog
 
+### 0.9.3
+* Added new 'disable_snap' field argument. When used, the snapToRoads API will not be called when drawing polylines
+* Wrapped conditionals using the limit_drawing array key with isset() to ensure that the editor correctly renders
+
 ### 0.9.2
 * Fixed invalid use of array keys
 
