@@ -47,7 +47,7 @@ if ( ! function_exists( 'snapmap_build_single' ) ) {
                 function initMap() {
                 <!-- / Styles a map in night mode. -->
                 var map = new google.maps.Map(document.getElementById("map"), {
-                '.( $center ? 'center: {lat: '.$center[lat].', lng: '.$center[lng].'},' : 'center: {lat: '.$location[lat].', lng: '.$location[lng].'},' ).'
+                '.( $center ? 'center: {lat: '.$center['lat'].', lng: '.$center['lng'].'},' : 'center: {lat: '.$location['lat'].', lng: '.$location['lng'].'},' ).'
                 zoom: '.$zoom.',
                 scrollwheel: false,
                 '.( $controls['maptype'] ? 'mapTypeControl: true,' : 'mapTypeControl: false,' ).'
@@ -102,14 +102,14 @@ if ( ! function_exists( 'snapmap_build_single' ) ) {
                         $place = get_post_meta( $pin->ID, $map_prefix, true );
                         $i = 1;
                         if (!empty($place)) {
-                            $output .= '[\''.addslashes($place[tooltip]).'\','.$place[lat].', '.$place[lng].', \''.$i.'\'],';
+                            $output .= '[\''.addslashes($place['tooltip']).'\','.$place['lat'].', '.$place['lng'].', \''.$i.'\'],';
                             $i++;
                         }
                     }
                     
                 } else {
                 
-                    $output .= '[\''.addslashes($location[tooltip]).'\','.$location[lat].', '.$location[lng].', \'1\']';
+                    $output .= '[\''.addslashes($location['tooltip']).'\','.$location['lat'].', '.$location['lng'].', \'1\']';
                 
                 }
                 

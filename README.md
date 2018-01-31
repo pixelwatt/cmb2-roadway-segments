@@ -74,5 +74,8 @@ Also not yet, but this is an upcoming feature.
 
 ## Changelog
 
+### 0.9.2
+* Fixed invalid use of array keys
+
 ### 0.9.0
 * Initial release.

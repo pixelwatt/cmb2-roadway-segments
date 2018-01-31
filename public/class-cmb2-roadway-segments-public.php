@@ -101,7 +101,7 @@ class Cmb2_Roadway_Segments_Public {
                 function initMap() {
                 <!-- / Styles a map in night mode. -->
                 var map = new google.maps.Map(document.getElementById("map"), {
-                center: {lat: '.$location[lat].', lng: '.$location[lng].'},
+                center: {lat: '.$location['lat'].', lng: '.$location['lng'].'},
                 zoom: '.$a['zoom'].',
                 scrollwheel: false,
                 '.( $controls['maptype'] ? 'mapTypeControl: true,' : 'mapTypeControl: false,' ).'
@@ -618,10 +618,10 @@ class Cmb2_Roadway_Segments_Public {
     
     public function sanitize_snapmap( $override_value, $value, $object_id, $field_args ) {
         
-        if ( (!empty($value[lat])) && (!empty($value[lng])) ) {
-            $value[latlng] = '{"lat":'.$value[lat].',"lng":'.$value[lng].'}';
+        if ( (!empty($value['lat'])) && (!empty($value['lng'])) ) {
+            $value['latlng'] = '{"lat":'.$value['lat'].',"lng":'.$value['lng'].'}';
         } else {
-            $value[latlng] = '';    
+            $value['latlng'] = '';    
         }
         
         update_post_meta( $object_id, 'cmb2_roadway_segments_prefix', $value['prefix'] );
