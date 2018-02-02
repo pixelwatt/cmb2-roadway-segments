@@ -146,6 +146,8 @@ class Cmb2_Roadway_Segments_Admin {
         $valid['maptype'] = (isset($input['maptype']) && !empty($input['maptype'])) ? 1 : 0;
         $valid['mapstyle'] = $input['mapstyle'];
         $valid['strokecolor'] = $input['strokecolor'];
+        $valid['circlestroke'] = $input['circlestroke'];
+        $valid['circlefill'] = $input['circlefill'];
         
     
         return $valid;

@@ -75,6 +75,8 @@ class Cmb2_Roadway_Segments_Public {
 	    $enqueue_maps = $this->wp_cmb2_segment_options['enqueue'];
 	    $styles = $this->wp_cmb2_segment_options['mapstyle'];
 	    $strokecolor = $this->wp_cmb2_segment_options['strokecolor'];
+        $circlestroke = $this->wp_cmb2_segment_options['circlestroke'];
+        $circlefill = $this->wp_cmb2_segment_options['circlefill'];
 	    
 	    $controls['fullscreen'] = $this->wp_cmb2_segment_options['fullscreen'];
 	    $controls['streetview'] = $this->wp_cmb2_segment_options['streetview'];
@@ -131,12 +133,29 @@ class Cmb2_Roadway_Segments_Public {
                             snappedPolyline.setMap(map);
                         ';
                     }
+
+                    if ( (!empty($location['circle_radius'])) && (!empty($location['circle_center'])) ) {
+                            $output .= '
+                                var decodedCircleCenter = jQuery.parseJSON(\''.$location['circle_center'].'\');
+                                var originalCircle = new google.maps.Circle({
+                                      '.( !empty($circlestroke) ? 'strokeColor: \''.$circlestroke.'\',' : 'strokeColor: \'#FF0000\',' ).'
+                                      strokeOpacity: 0.8,
+                                      strokeWeight: 2,
+                                      '.( !empty($circlefill) ? 'fillColor: \''.$circlefill.'\',' : 'fillColor: \'#FF0000\',' ).'
+                                      fillOpacity: 0.35,
+                                      map: map,
+                                      center: decodedCircleCenter,
+                                      radius: '.$location['circle_radius'].'
+                                });
+                                originalCircle.setMap(map);
+                            ';
+                        }
                 
                 
                 
                 $output .= 'var locations = [';
                 
-                $output .= '[\''.addslashes($location[tooltip]).'\','.$location[lat].', '.$location[lng].', \'1\']';
+                $output .= '[\''.addslashes($location['tooltip']).'\','.$location['lat'].', '.$location['lng'].', \'1\']';
                 
                 $output .= '
                 ];
@@ -247,6 +266,8 @@ class Cmb2_Roadway_Segments_Public {
     	        
     	        		$value = wp_parse_args( $value, array(
             		'array' => '',
+                    'circle_radius' => '',
+                    'circle_center' => '',
             		'lat' => '',
             		'lng'      => '',
             		'latlng'     => '',
@@ -266,6 +287,7 @@ class Cmb2_Roadway_Segments_Public {
                     var polylines = [];
                     var snappedCoordinates = [];
                     var snappedPolyline;
+                    var snappedCircle;
                     var mapmarker;
                     
                     
@@ -367,6 +389,23 @@ class Cmb2_Roadway_Segments_Public {
                                 originalPolyline.setMap(map);
                             ';
                         }
+
+                        if ( (!empty($location['circle_radius'])) && (!empty($location['circle_center'])) ) {
+                            echo '
+                                var decodedCircleCenter = jQuery.parseJSON(\''.$location['circle_center'].'\');
+                                var originalCircle = new google.maps.Circle({
+                                      strokeColor: \'#FF0000\',
+                                      strokeOpacity: 0.8,
+                                      strokeWeight: 2,
+                                      fillColor: \'#FF0000\',
+                                      fillOpacity: 0.35,
+                                      map: map,
+                                      center: decodedCircleCenter,
+                                      radius: '.$location['circle_radius'].'
+                                });
+                                originalCircle.setMap(map);
+                            ';
+                        }
                         
                         if (!empty($value['lat'])) {
                             echo '
@@ -392,7 +431,7 @@ class Cmb2_Roadway_Segments_Public {
                             drawingControlOptions: {
                               position: google.maps.ControlPosition.TOP_LEFT,
                               
-                              '.( isset($field->args['limit_drawing']) ? 'drawingModes: [\'marker\']' : 'drawingModes: [\'marker\', \'polyline\']' ).'
+                              '.( isset($field->args['limit_drawing']) ? 'drawingModes: [\'marker\']' : 'drawingModes: [\'marker\', \'polyline\', \'circle\']' ).'
                             },
                             polylineOptions: {
                               strokeColor: \'#696969\',
@@ -408,6 +447,30 @@ class Cmb2_Roadway_Segments_Public {
                             poly.setMap(null);
                             placeIdArray = [];
                             runSnapToRoad(path);
+                          });
+
+                          google.maps.event.addListener(drawingManager, \'circlecomplete\', function(circle) {
+                            '.( !empty($value['circle_radius']) ? 'originalCircle.setMap(null);' : '' ).'
+                            var radius = circle.getRadius();
+                            var center = circle.getCenter();
+                            circle.setMap(null);
+                            jQuery("input[name=\''.$field->args['id'].'[circle_radius]\']").val(JSON.stringify(radius));
+                            jQuery("input[name=\''.$field->args['id'].'[circle_center]\']").val(JSON.stringify(center));
+
+                              if (typeof snappedCircle !== \'undefined\') { snappedCircle.setMap(null); }
+                              snappedCircle = new google.maps.Circle({
+                                  strokeColor: \'#FF0000\',
+                                  strokeOpacity: 0.8,
+                                  strokeWeight: 2,
+                                  fillColor: \'#FF0000\',
+                                  fillOpacity: 0.35,
+                                  map: map,
+                                  center: center,
+                                  radius: radius
+                              });
+                            
+                              snappedCircle.setMap(map);
+                              circles.push(snappedCircle);
                           });
                           
                           drawingManager.addListener(\'markercomplete\', function(marker) {
@@ -612,6 +675,24 @@ class Cmb2_Roadway_Segments_Public {
                         </div>
 
                         <div class="marker-lat-field"><p>Roadway snapping is <strong><?php echo ( isset($field->args['disable_snap']) ? 'Disabled' : 'Enabled' ); ?></strong></p></div>
+
+                        <div class="marker-lat-field"><p><label for="<?php echo $field_type->_id( '_array' ); ?>">Circle Radius</label></p>
+                                <?php echo $field_type->input( array(
+                                    'name'  => $field_type->_name( '[circle_radius]' ),
+                                    'id'    => $field_type->_id( '_circle_radius' ),
+                                    'value' => $value['circle_radius'],
+                                    'desc'  => '',
+                                ) ); ?>
+                        </div>
+
+                        <div class="marker-lat-field"><p><label for="<?php echo $field_type->_id( '_array' ); ?>">Circle Center JSON</label></p>
+                                <?php echo $field_type->input( array(
+                                    'name'  => $field_type->_name( '[circle_center]' ),
+                                    'id'    => $field_type->_id( '_circle_center' ),
+                                    'value' => $value['circle_center'],
+                                    'desc'  => '',
+                                ) ); ?>
+                        </div>
                         	
                 	<?php 
                     	} 

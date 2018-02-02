@@ -32,6 +32,8 @@
              $maptype = $options['maptype'];
              $mapstyle = $options['mapstyle'];
              $strokecolor = $options['strokecolor'];
+             $circlestroke = ( isset($options['circlestroke']) ? $options['circlestroke'] : '' );
+             $circlefill = ( isset($options['circlefill']) ? $options['circlefill'] : '' );
              
              settings_fields($this->plugin_name);
              do_settings_sections($this->plugin_name);
@@ -107,10 +109,26 @@
                         </tr>
                         <tr>
                             <th scope="row">
-                                Stroke Color
+                                Polyline Stroke Color
                             </th>
                             <td>
                                 <input type="text" class="iris-picker" id="<?php echo $this->plugin_name; ?>-strokecolor" name="<?php echo $this->plugin_name; ?>[strokecolor]" value="<?php if(!empty($strokecolor)) { echo $strokecolor; } ?>" />
+                            </td>
+                        </tr>
+                        <tr>
+                            <th scope="row">
+                                Circle Stroke Color
+                            </th>
+                            <td>
+                                <input type="text" class="iris-picker" id="<?php echo $this->plugin_name; ?>-circlestroke" name="<?php echo $this->plugin_name; ?>[circlestroke]" value="<?php if(!empty($circlestroke)) { echo $circlestroke; } ?>" />
+                            </td>
+                        </tr>
+                        <tr>
+                            <th scope="row">
+                                Circle Fill Color
+                            </th>
+                            <td>
+                                <input type="text" class="iris-picker" id="<?php echo $this->plugin_name; ?>-circlefill" name="<?php echo $this->plugin_name; ?>[circlefill]" value="<?php if(!empty($circlefill)) { echo $circlefill; } ?>" />
                             </td>
                         </tr>
                     </tbody>

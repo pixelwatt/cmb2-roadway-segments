@@ -80,6 +80,11 @@ Also not yet, but this is an upcoming feature.
 
 == Changelog ==
 
+= 0.9.4 =
+* Added the ability to draw circles on the map when the "limit_drawing" argument is not set
+* Added fields to specify circle stroke and fill colors to the plugin's settings page
+* Fixed invalid use of array keys in the shortcode function
+
 = 0.9.3 =
 * Added new 'disable_snap' field argument. When used, the snapToRoads API will not be called when drawing polylines
 * Wrapped conditionals using the limit_drawing array key with isset() to ensure that the editor correctly renders
