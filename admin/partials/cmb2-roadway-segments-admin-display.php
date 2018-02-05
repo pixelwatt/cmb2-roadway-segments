@@ -117,7 +117,7 @@
                         </tr>
                         <tr>
                             <th scope="row">
-                                Circle Stroke Color
+                                Cirlce / Polygon Stroke Color
                             </th>
                             <td>
                                 <input type="text" class="iris-picker" id="<?php echo $this->plugin_name; ?>-circlestroke" name="<?php echo $this->plugin_name; ?>[circlestroke]" value="<?php if(!empty($circlestroke)) { echo $circlestroke; } ?>" />
@@ -125,7 +125,7 @@
                         </tr>
                         <tr>
                             <th scope="row">
-                                Circle Fill Color
+                                Cirlce / Polygon Fill Color
                             </th>
                             <td>
                                 <input type="text" class="iris-picker" id="<?php echo $this->plugin_name; ?>-circlefill" name="<?php echo $this->plugin_name; ?>[circlefill]" value="<?php if(!empty($circlefill)) { echo $circlefill; } ?>" />

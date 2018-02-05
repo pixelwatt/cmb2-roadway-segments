@@ -16,6 +16,8 @@ if ( ! function_exists( 'snapmap_build_single' ) ) {
 	    $enqueue_maps = $plugin_options['enqueue'];
 	    $styles = $plugin_options['mapstyle'];
 	    $strokecolor = $plugin_options['strokecolor'];
+        $circlestroke = $plugin_options['circlestroke'];
+        $circlefill = $plugin_options['circlefill'];
 	    
 	    $controls['fullscreen'] = $plugin_options['fullscreen'];
 	    $controls['streetview'] = $plugin_options['streetview'];
@@ -79,30 +81,118 @@ if ( ! function_exists( 'snapmap_build_single' ) ) {
                 }
                 
                 
-                if (!empty($location['array'])) {
-                        $output .= '
-                            var decoded = jQuery.parseJSON(\''.$location['array'].'\');
-                            var snappedPolyline = new google.maps.Polyline({
-                                path: decoded,
-                                '.( !empty($strokecolor) ? 'strokeColor: \''.$strokecolor.'\',' : 'strokeColor: \'#F6A623\',' ).'
-                                strokeWeight: 5
-                              });
-                            snappedPolyline.setMap(map);
-                        ';
+                
+                
+                if ($mapquery) {
+                    $i = 1;
+                    foreach ($locations as $pin) {
+                        $map_prefix = get_post_meta( $pin->ID, 'cmb2_roadway_segments_prefix', true );
+                        $place = get_post_meta( $pin->ID, $map_prefix, true );
+                        
+                        if ( !empty($place['polygon_array']) ) {
+                            $output .= '
+                                var decodedPolygon'.$i.' = google.maps.geometry.encoding.decodePath(\''.$place['polygon_array'].'\');
+                                var originalPolygon'.$i.' = new google.maps.Polygon({
+                                  paths: decodedPolygon'.$i.',
+                                  '.( !empty($circlestroke) ? 'strokeColor: \''.$circlestroke.'\',' : 'strokeColor: \'#FF0000\',' ).'
+                                  strokeOpacity: 0.8,
+                                  strokeWeight: 2,
+                                  '.( !empty($circlefill) ? 'fillColor: \''.$circlefill.'\',' : 'fillColor: \'#FF0000\',' ).'
+                                  fillOpacity: 0.35,
+                                  map: map
+                                });
+                                originalPolygon'.$i.'.setMap(map);
+                            ';
+
+                        }
+                        if (!empty($place['array'])) {
+                            $output .= '
+                                var decoded'.$i.' = jQuery.parseJSON(\''.$place['array'].'\');
+                                var snappedPolyline'.$i.' = new google.maps.Polyline({
+                                    path: decoded'.$i.',
+                                    '.( !empty($strokecolor) ? 'strokeColor: \''.$strokecolor.'\',' : 'strokeColor: \'#F6A623\',' ).'
+                                    strokeWeight: 5
+                                  });
+                                snappedPolyline'.$i.'.setMap(map);
+                            ';
+                        }
+                        if ( (!empty($place['circle_radius'])) && (!empty($place['circle_center'])) ) {
+                            $output .= '
+                                var decodedCircleCenter'.$i.' = jQuery.parseJSON(\''.$place['circle_center'].'\');
+                                var originalCircle'.$i.' = new google.maps.Circle({
+                                      '.( !empty($circlestroke) ? 'strokeColor: \''.$circlestroke.'\',' : 'strokeColor: \'#FF0000\',' ).'
+                                      strokeOpacity: 0.8,
+                                      strokeWeight: 2,
+                                      '.( !empty($circlefill) ? 'fillColor: \''.$circlefill.'\',' : 'fillColor: \'#FF0000\',' ).'
+                                      fillOpacity: 0.35,
+                                      map: map,
+                                      center: decodedCircleCenter'.$i.',
+                                      radius: '.$place['circle_radius'].'
+                                });
+                                originalCircle'.$i.'.setMap(map);
+                            ';
+                        }
+                        $i++;
                     }
-                
-                
+
+                } else {
+                    $i = 1;
+                    if ( !empty($location['polygon_array']) ) {
+                            $output .= '
+                                var decodedPolygon'.$i.' = google.maps.geometry.encoding.decodePath(\''.$location['polygon_array'].'\');
+                                var originalPolygon'.$i.' = new google.maps.Polygon({
+                                  paths: decodedPolygon'.$i.',
+                                  '.( !empty($circlestroke) ? 'strokeColor: \''.$circlestroke.'\',' : 'strokeColor: \'#FF0000\',' ).'
+                                  strokeOpacity: 0.8,
+                                  strokeWeight: 2,
+                                  '.( !empty($circlefill) ? 'fillColor: \''.$circlefill.'\',' : 'fillColor: \'#FF0000\',' ).'
+                                  fillOpacity: 0.35,
+                                  map: map
+                                });
+                                originalPolygon'.$i.'.setMap(map);
+                            ';
+
+                        }
+                        if (!empty($location['array'])) {
+                            $output .= '
+                                var decoded'.$i.' = jQuery.parseJSON(\''.$location['array'].'\');
+                                var snappedPolyline'.$i.' = new google.maps.Polyline({
+                                    path: decoded'.$i.',
+                                    '.( !empty($strokecolor) ? 'strokeColor: \''.$strokecolor.'\',' : 'strokeColor: \'#F6A623\',' ).'
+                                    strokeWeight: 5
+                                  });
+                                snappedPolyline'.$i.'.setMap(map);
+                            ';
+                        }
+                        if ( (!empty($location['circle_radius'])) && (!empty($location['circle_center'])) ) {
+                            $output .= '
+                                var decodedCircleCenter'.$i.' = jQuery.parseJSON(\''.$location['circle_center'].'\');
+                                var originalCircle'.$i.' = new google.maps.Circle({
+                                      '.( !empty($circlestroke) ? 'strokeColor: \''.$circlestroke.'\',' : 'strokeColor: \'#FF0000\',' ).'
+                                      strokeOpacity: 0.8,
+                                      strokeWeight: 2,
+                                      '.( !empty($circlefill) ? 'fillColor: \''.$circlefill.'\',' : 'fillColor: \'#FF0000\',' ).'
+                                      fillOpacity: 0.35,
+                                      map: map,
+                                      center: decodedCircleCenter'.$i.',
+                                      radius: '.$location['circle_radius'].'
+                                });
+                                originalCircle'.$i.'.setMap(map);
+                            ';
+                        }
+                }
                 
                 $output .= 'var locations = [';
                 
                 if ($mapquery) {
-                    
+                    $i = 1;
                     foreach ($locations as $pin) {
                         $map_prefix = get_post_meta( $pin->ID, 'cmb2_roadway_segments_prefix', true );
                         $place = get_post_meta( $pin->ID, $map_prefix, true );
-                        $i = 1;
+                        
                         if (!empty($place)) {
                             $output .= '[\''.addslashes($place['tooltip']).'\','.$place['lat'].', '.$place['lng'].', \''.$i.'\'],';
+                            
                             $i++;
                         }
                     }
@@ -149,7 +239,7 @@ if ( ! function_exists( 'snapmap_build_single' ) ) {
                 
                 }
               </script>
-              '.( empty($enqueue_maps) ? '<script async defer src="https://maps.googleapis.com/maps/api/js?key='.$api_key.'&amp;callback=initMap"></script>' : '' ).'
+              '.( empty($enqueue_maps) ? '<script async defer src="https://maps.googleapis.com/maps/api/js?key='.$api_key.'&amp;libraries=geometry&amp;callback=initMap"></script>' : '' ).'
               
             
             ';

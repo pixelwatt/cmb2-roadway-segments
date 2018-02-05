@@ -134,6 +134,23 @@ class Cmb2_Roadway_Segments_Public {
                         ';
                     }
 
+                    if ( !empty($location['polygon_array']) ) {
+                             $output .= '
+                                var decodedPolygon = google.maps.geometry.encoding.decodePath(\''.$location['polygon_array'].'\');
+                                var originalPolygon = new google.maps.Polygon({
+                                  paths: decodedPolygon,
+                                  '.( !empty($circlestroke) ? 'strokeColor: \''.$circlestroke.'\',' : 'strokeColor: \'#FF0000\',' ).'
+                                  strokeOpacity: 0.8,
+                                  strokeWeight: 2,
+                                  '.( !empty($circlefill) ? 'fillColor: \''.$circlefill.'\',' : 'fillColor: \'#FF0000\',' ).'
+                                  fillOpacity: 0.35,
+                                  map: map
+                                });
+                                originalPolygon.setMap(map);
+                            ';
+
+                        }
+
                     if ( (!empty($location['circle_radius'])) && (!empty($location['circle_center'])) ) {
                             $output .= '
                                 var decodedCircleCenter = jQuery.parseJSON(\''.$location['circle_center'].'\');
@@ -266,6 +283,7 @@ class Cmb2_Roadway_Segments_Public {
     	        
     	        		$value = wp_parse_args( $value, array(
             		'array' => '',
+                    'polygon_array' => '',
                     'circle_radius' => '',
                     'circle_center' => '',
             		'lat' => '',
@@ -288,6 +306,7 @@ class Cmb2_Roadway_Segments_Public {
                     var snappedCoordinates = [];
                     var snappedPolyline;
                     var snappedCircle;
+                    var snappedPolygon;
                     var mapmarker;
                     
                     
@@ -406,6 +425,23 @@ class Cmb2_Roadway_Segments_Public {
                                 originalCircle.setMap(map);
                             ';
                         }
+
+                        if ( !empty($location['polygon_array']) ) {
+                            echo '
+                                var decodedPolygon = google.maps.geometry.encoding.decodePath(\''.$location['polygon_array'].'\');
+                                var originalPolygon = new google.maps.Polygon({
+                                  paths: decodedPolygon,
+                                  strokeColor: \'#FF0000\',
+                                  strokeOpacity: 0.8,
+                                  strokeWeight: 2,
+                                  fillColor: \'#FF0000\',
+                                  fillOpacity: 0.35,
+                                  map: map
+                                });
+                                originalPolygon.setMap(map);
+                            ';
+
+                        }
                         
                         if (!empty($value['lat'])) {
                             echo '
@@ -431,7 +467,7 @@ class Cmb2_Roadway_Segments_Public {
                             drawingControlOptions: {
                               position: google.maps.ControlPosition.TOP_LEFT,
                               
-                              '.( isset($field->args['limit_drawing']) ? 'drawingModes: [\'marker\']' : 'drawingModes: [\'marker\', \'polyline\', \'circle\']' ).'
+                              '.( isset($field->args['limit_drawing']) ? 'drawingModes: [\'marker\']' : 'drawingModes: [\'marker\', \'polyline\', \'circle\', \'polygon\']' ).'
                             },
                             polylineOptions: {
                               strokeColor: \'#696969\',
@@ -470,7 +506,27 @@ class Cmb2_Roadway_Segments_Public {
                               });
                             
                               snappedCircle.setMap(map);
-                              circles.push(snappedCircle);
+                          });
+
+                          google.maps.event.addListener(drawingManager, \'polygoncomplete\', function(poly) {
+                            '.( !empty($value['polygon_array']) ? 'originalPolygon.setMap(null);' : '' ).'
+                            var polypath = poly.getPath();
+                            poly.setMap(null);
+                            var encodeString = google.maps.geometry.encoding.encodePath(polypath);
+                            jQuery("textarea[name=\''.$field->args['id'].'[polygon_array]\']").val(encodeString);
+
+                              if (typeof snappedPolygon !== \'undefined\') { snappedPolygon.setMap(null); }
+                              snappedPolygon = new google.maps.Polygon({
+                                  paths: polypath,
+                                  strokeColor: \'#FF0000\',
+                                  strokeOpacity: 0.8,
+                                  strokeWeight: 2,
+                                  fillColor: \'#FF0000\',
+                                  fillOpacity: 0.35,
+                                  map: map,
+                              });
+                            
+                              snappedPolygon.setMap(map);
                           });
                           
                           drawingManager.addListener(\'markercomplete\', function(marker) {
@@ -693,6 +749,15 @@ class Cmb2_Roadway_Segments_Public {
                                     'desc'  => '',
                                 ) ); ?>
                         </div>
+
+                        <div class="marker-lat-field"><p><label for="<?php echo $field_type->_id( '_array' ); ?>">Polygon JSON</label></p>
+                                <?php echo $field_type->textarea( array(
+                                    'name'  => $field_type->_name( '[polygon_array]' ),
+                                    'id'    => $field_type->_id( '_polygon_array' ),
+                                    'value' => $value['polygon_array'],
+                                    'desc'  => '',
+                                ) ); ?>
+                        </div>
                         	
                 	<?php 
                     	} 
@@ -743,7 +808,7 @@ class Cmb2_Roadway_Segments_Public {
             
             if (!$enqueue_maps == 1) {
                 // Lets load up some Google Maps JS
-        	        wp_enqueue_script( 'google-maps-drawing', 'https://maps.googleapis.com/maps/api/js?libraries=drawing,places&key='.$api_key, array('jquery'), '1.0.0', false ); 
+        	        wp_enqueue_script( 'google-maps-drawing', 'https://maps.googleapis.com/maps/api/js?libraries=drawing,places,geometry&key='.$api_key, array('jquery'), '1.0.0', false ); 
         	    }         
           }
 	}
