@@ -80,6 +80,13 @@ Also not yet, but this is an upcoming feature.
 
 == Changelog ==
 
+= 0.9.5 =
+
+* Added the ability to draw polygons on the map when the "limit_drawing" argument is not set. As a result, the geometry library is now required.
+* Modified circle stroke and fill lables to reflect the inclusion of polygons.
+* Fixed missing fill and stoke variables in output functions.
+* Fixed a bug that prevented polylines, polygons, and circles from being rendered on query-based maps.
+
 = 0.9.4 =
 * Added the ability to draw circles on the map when the "limit_drawing" argument is not set
 * Added fields to specify circle stroke and fill colors to the plugin's settings page
