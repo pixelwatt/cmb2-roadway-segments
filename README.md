@@ -52,6 +52,10 @@ Also yes, but only by using the template tag.
 
 ## Changelog
 
+### 0.9.6
+
+* Added fallbacks for tooltips. When being used for a single post, the title of the post containing the pin is displayed in the tooltip. When using queries, the post title followed by a link to the post is displayed.
+
 ### 0.9.5
 
 * Added the ability to draw polygons on the map when the "limit_drawing" argument is not set. As a result, the geometry library is now required.
