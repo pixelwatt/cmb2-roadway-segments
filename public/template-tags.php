@@ -189,9 +189,10 @@ if ( ! function_exists( 'snapmap_build_single' ) ) {
                     foreach ($locations as $pin) {
                         $map_prefix = get_post_meta( $pin->ID, 'cmb2_roadway_segments_prefix', true );
                         $place = get_post_meta( $pin->ID, $map_prefix, true );
+                        $tooltip = ( ! empty( $place['tooltip'] ) ? $place['tooltip'] : get_the_title( $pin->ID ) . ' (<a href="' . get_the_permalink( $pin->ID ) . '">More Details</a>)' );
                         
                         if (!empty($place)) {
-                            $output .= '[\''.addslashes($place['tooltip']).'\','.$place['lat'].', '.$place['lng'].', \''.$i.'\'],';
+                            $output .= '[\''.addslashes($tooltip).'\','.$place['lat'].', '.$place['lng'].', \''.$i.'\'],';
                             
                             $i++;
                         }
@@ -199,7 +200,8 @@ if ( ! function_exists( 'snapmap_build_single' ) ) {
                     
                 } else {
                 
-                    $output .= '[\''.addslashes($location['tooltip']).'\','.$location['lat'].', '.$location['lng'].', \'1\']';
+                    $tooltip = ( ! empty( $location['tooltip'] ) ? $location['tooltip'] : get_the_title($id) );
+                    $output .= '[\''.addslashes($tooltip).'\','.$location['lat'].', '.$location['lng'].', \'1\']';
                 
                 }
                 
