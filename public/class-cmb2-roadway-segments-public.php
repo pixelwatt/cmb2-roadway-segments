@@ -281,15 +281,16 @@ class Cmb2_Roadway_Segments_Public {
     	        
     	        $this->setup_admin_scripts($api_key);
     	        
-    	        		$value = wp_parse_args( $value, array(
+    	        $value = wp_parse_args( $value, array(
             		'array' => '',
-                    'polygon_array' => '',
-                    'circle_radius' => '',
-                    'circle_center' => '',
+                'polygon_array' => '',
+                'circle_radius' => '',
+                'circle_center' => '',
             		'lat' => '',
             		'lng'      => '',
             		'latlng'     => '',
             		'tooltip'     => '',
+                'geojson' => '',
             	) );
     	        
     	        $location = get_post_meta( $field->object_id, $field->args['id'], true );
@@ -701,20 +702,13 @@ class Cmb2_Roadway_Segments_Public {
                     	</div>
                     	
                 </div>
+
                 
+
+
                 <h3>Debug Info</h3>
                 
                 <div class="cmb2-roadway-segments-manual">
-                
-                    <div class="marker-lat-field"><p><label for="<?php echo $field_type->_id( '_latlng' ); ?>">Map Marker JSON (Will refresh on save is using manual entry)</label></p>   
-                    		<?php echo $field_type->input( array(
-                    			'name'  => $field_type->_name( '[latlng]' ),
-                    			'id'    => $field_type->_id( '_latlng' ),
-                    			'value' => $value['latlng'],
-                    			'desc'  => '',
-                    			'disabled' => ''
-                    		) ); ?>
-                    </div>
                 	
                 	
                 	<?php 
@@ -766,6 +760,33 @@ class Cmb2_Roadway_Segments_Public {
                     
                 
                 </div>
+
+                <?php 
+                    if (isset($field->args['limit_drawing'])) { 
+                        //Do nothing
+                      } else {
+                      ?>
+
+                      <h3>Tools</h3>
+                
+                        <div class="cmb2-roadway-segments-manual">
+
+                          <div class="marker-lat-field"><p><label for="<?php echo $field_type->_id( '_geojson' ); ?>">Convert GeoJSON</label></p>
+                              <?php echo $field_type->textarea( array(
+                                'name'  => $field_type->_name( '[geojson]' ),
+                                'id'    => $field_type->_id( '_geojson' ),
+                                'value' => $value['geojson'],
+                                'desc'  => '',
+                              ) ); ?>
+                          </div>
+
+                        </div>
+
+                      <?php
+                    
+
+                    }
+                ?>
                     
             </div>
             
@@ -793,6 +814,35 @@ class Cmb2_Roadway_Segments_Public {
             $value['latlng'] = '{"lat":'.$value['lat'].',"lng":'.$value['lng'].'}';
         } else {
             $value['latlng'] = '';    
+        }
+
+        if ( !empty( $value['geojson'] ) ) {
+
+          $cords = '';
+          $geojson = stripslashes($value['geojson']);
+          $decoded = json_decode($geojson, true);
+
+          if ( isset( $decoded['coordinates'] ) ) {
+            $cords .= '[';
+            $i = 1;
+            $count = count($decoded['coordinates']);
+            foreach ($decoded['coordinates'] as $cord) {
+              $cords .= '{"lat":' . $cord[1] . ',"lng":' . $cord[0] . '}' . ( $i != $count ? ', ' : '' );
+              $i++;
+            }
+            $cords .= ']';
+
+            switch ( $decoded['type'] ) {
+              case 'LineString':
+                $value['array'] = $cords;
+                $value['geojson'] = '';
+                break;
+              default:
+                break;
+            }
+          }
+
+
         }
         
         update_post_meta( $object_id, 'cmb2_roadway_segments_prefix', $value['prefix'] );

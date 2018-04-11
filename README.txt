@@ -80,6 +80,15 @@ Also not yet, but this is an upcoming feature.
 
 == Changelog ==
 
+= 0.9.61 =
+
+GeoJSON copy-and-paste:
+* Added a field to paste raw geojson type / coordinate data into (under the Tools panel below the map). If the data type is LineString, pasted data will automatically be converted into a Google Maps compatiable JSON array and overwrite the polyline (Roadway Segment) field value. This functionality will be extended to other geometry types for the 0.9.7 release.
+
+= 0.9.6 =
+
+* Added fallbacks for tooltips. When being used for a single post, the title of the post containing the pin is displayed in the tooltip. When using queries, the post title followed by a link to the post is displayed.
+
 = 0.9.5 =
 
 * Added the ability to draw polygons on the map when the "limit_drawing" argument is not set. As a result, the geometry library is now required.
