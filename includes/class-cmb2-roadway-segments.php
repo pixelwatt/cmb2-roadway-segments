@@ -69,7 +69,7 @@ class Cmb2_Roadway_Segments {
 	public function __construct() {
 
 		$this->plugin_name = 'cmb2-roadway-segments';
-		$this->version = '0.9.7';
+		$this->version = '0.9.71';
 
 		$this->load_dependencies();
 		$this->set_locale();

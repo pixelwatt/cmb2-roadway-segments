@@ -5,7 +5,7 @@ if ( ! defined( 'ABSPATH' ) ) {
 }
 
 if ( ! function_exists( 'snapmap_build_single' ) ) {
-	function snapmap_build_single($id='',$width='100%',$height='400px',$zoom='16', $center=false, $marker=false, $mapquery=false, $mapstyle=false) {
+	function snapmap_build_single($id='',$width='100%',$height='400px',$zoom='16', $center=false, $marker=false, $mapquery=false, $mapstyle=false, $terrain=false) {
 	    $plugin_options = get_option( 'cmb2-roadway-segments' );
 	    
 	    if (empty($id)) {
@@ -56,6 +56,7 @@ if ( ! function_exists( 'snapmap_build_single' ) ) {
                 '.( $controls['streetview'] ? 'streetViewControl: true,' : 'streetViewControl: false,' ).'
                 '.( $controls['fullscreen'] ? 'fullscreenControl: true,' : 'fullscreenControl: false,' ).'
                 zoomControl: true,
+                ' . ( $terrain ? 'mapTypeId: \'terrain\',' : '' ) . '
                 rotateControl: false'.( !empty($styles) ? ',
                 ' : '' );
                 
