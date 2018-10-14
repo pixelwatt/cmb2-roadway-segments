@@ -73,9 +73,10 @@ if ( ! function_exists( 'snapmap_build_single' ) ) {
                     $output .= '
                         var image = {
                         url: \''.$marker['url'].'\',
-                        size: new google.maps.Size('.$marker['size'].'),
+                        ' . ( isset( $marker['size'] ) ? 'size: new google.maps.Size('.$marker['size'].'),' : '' ) . '
                         origin: new google.maps.Point('.$marker['origin'].'),
-                        anchor: new google.maps.Point('.$marker['anchor'].')
+                        anchor: new google.maps.Point('.$marker['anchor'].')' . ( isset( $marker['scaledSize'] ) ? ',' : '' ) . '
+                        ' . ( isset( $marker['scaledSize'] ) ? 'scaledSize: new google.maps.Size('.$marker['scaledSize'].')' : '' ) . '
                         };
                     ';
                 }

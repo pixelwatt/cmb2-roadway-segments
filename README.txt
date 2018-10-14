@@ -80,6 +80,10 @@ Also not yet, but this is an upcoming feature.
 
 == Changelog ==
 
+= 0.9.7 =
+
+* Added support for including retina map markers when using the snapmap_build_single() function. This is accomplished by including $marker['scaledSize']
+
 = 0.9.61 =
 
 GeoJSON copy-and-paste:
