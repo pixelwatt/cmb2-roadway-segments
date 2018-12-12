@@ -4,7 +4,7 @@ Donate link: https://pixelwatt.com
 Tags: cmb2, maps
 Requires at least: 4.0
 Tested up to: 4.7.5
-Stable tag: 0.9.2
+Stable tag: 0.9.8
 License: GPLv2 or later
 License URI: http://www.gnu.org/licenses/gpl-2.0.html
 
@@ -79,6 +79,10 @@ Not yet, but it will.
 Also not yet, but this is an upcoming feature.
 
 == Changelog ==
+
+= 0.9.8 =
+
+Added the capability to display multiple maps on one page using the snapmap_build_single() function by passing a unique ID for additional maps.
 
 = 0.9.71 =
 

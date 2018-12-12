@@ -1,33 +1,33 @@
 <?php 
  
 if ( ! defined( 'ABSPATH' ) ) {
-	return;
+  return;
 }
 
 if ( ! function_exists( 'snapmap_build_single' ) ) {
-	function snapmap_build_single($id='',$width='100%',$height='400px',$zoom='16', $center=false, $marker=false, $mapquery=false, $mapstyle=false, $terrain=false) {
-	    $plugin_options = get_option( 'cmb2-roadway-segments' );
-	    
-	    if (empty($id)) {
+  function snapmap_build_single($id='',$width='100%',$height='400px',$zoom='16', $center=false, $marker=false, $mapquery=false, $mapstyle=false, $terrain=false, $uid = '') {
+      $plugin_options = get_option( 'cmb2-roadway-segments' );
+      
+      if (empty($id)) {
             $id = get_the_ID();
         }
         
         $api_key = $plugin_options['apikey'];
-	    $enqueue_maps = $plugin_options['enqueue'];
-	    $styles = $plugin_options['mapstyle'];
-	    $strokecolor = $plugin_options['strokecolor'];
+      $enqueue_maps = $plugin_options['enqueue'];
+      $styles = $plugin_options['mapstyle'];
+      $strokecolor = $plugin_options['strokecolor'];
         $circlestroke = $plugin_options['circlestroke'];
         $circlefill = $plugin_options['circlefill'];
-	    
-	    $controls['fullscreen'] = $plugin_options['fullscreen'];
-	    $controls['streetview'] = $plugin_options['streetview'];
-	    $controls['maptype'] = $plugin_options['maptype'];
-	    
-	    //fullscreen
-	    //streetview
-	    //maptype
+      
+      $controls['fullscreen'] = $plugin_options['fullscreen'];
+      $controls['streetview'] = $plugin_options['streetview'];
+      $controls['maptype'] = $plugin_options['maptype'];
+      
+      //fullscreen
+      //streetview
+      //maptype
         
-	    $output = '';
+      $output = '';
         
         if ( !empty($api_key) ) {
             
@@ -41,14 +41,15 @@ if ( ! function_exists( 'snapmap_build_single' ) ) {
             
             
             $output .= '
-                <div id="map" style="width: '.$width.'; height: '.$height.'; margin-bottom: 30px;"></div>
+            '.( empty($enqueue_maps) ? ( empty($uid) ? '<script src="https://maps.googleapis.com/maps/api/js?key='.$api_key.'&amp;libraries=geometry"></script>' : '' ) : '' ).'
+                <div id="map' . $uid . '" style="width: '.$width.'; height: '.$height.'; margin-bottom: 30px;"></div>
                 <script>
                 
                 
                 
-                function initMap() {
+                function initMap' . $uid . '() {
                 <!-- / Styles a map in night mode. -->
-                var map = new google.maps.Map(document.getElementById("map"), {
+                var map' . $uid . ' = new google.maps.Map(document.getElementById("map' . $uid . '"), {
                 '.( $center ? 'center: {lat: '.$center['lat'].', lng: '.$center['lng'].'},' : 'center: {lat: '.$location['lat'].', lng: '.$location['lng'].'},' ).'
                 zoom: '.$zoom.',
                 scrollwheel: false,
@@ -103,7 +104,7 @@ if ( ! function_exists( 'snapmap_build_single' ) ) {
                                   fillOpacity: 0.35,
                                   map: map
                                 });
-                                originalPolygon'.$i.'.setMap(map);
+                                originalPolygon'.$i.'.setMap(map' . $uid . ');
                             ';
 
                         }
@@ -115,7 +116,7 @@ if ( ! function_exists( 'snapmap_build_single' ) ) {
                                     '.( !empty($strokecolor) ? 'strokeColor: \''.$strokecolor.'\',' : 'strokeColor: \'#F6A623\',' ).'
                                     strokeWeight: 5
                                   });
-                                snappedPolyline'.$i.'.setMap(map);
+                                snappedPolyline'.$i.'.setMap(map' . $uid . ');
                             ';
                         }
                         if ( (!empty($place['circle_radius'])) && (!empty($place['circle_center'])) ) {
@@ -127,11 +128,11 @@ if ( ! function_exists( 'snapmap_build_single' ) ) {
                                       strokeWeight: 2,
                                       '.( !empty($circlefill) ? 'fillColor: \''.$circlefill.'\',' : 'fillColor: \'#FF0000\',' ).'
                                       fillOpacity: 0.35,
-                                      map: map,
+                                      map: map' . $uid . ',
                                       center: decodedCircleCenter'.$i.',
                                       radius: '.$place['circle_radius'].'
                                 });
-                                originalCircle'.$i.'.setMap(map);
+                                originalCircle'.$i.'.setMap(map' . $uid . ');
                             ';
                         }
                         $i++;
@@ -149,9 +150,9 @@ if ( ! function_exists( 'snapmap_build_single' ) ) {
                                   strokeWeight: 2,
                                   '.( !empty($circlefill) ? 'fillColor: \''.$circlefill.'\',' : 'fillColor: \'#FF0000\',' ).'
                                   fillOpacity: 0.35,
-                                  map: map
+                                  map: map' . $uid . '
                                 });
-                                originalPolygon'.$i.'.setMap(map);
+                                originalPolygon'.$i.'.setMap(map' . $uid . ');
                             ';
 
                         }
@@ -163,7 +164,7 @@ if ( ! function_exists( 'snapmap_build_single' ) ) {
                                     '.( !empty($strokecolor) ? 'strokeColor: \''.$strokecolor.'\',' : 'strokeColor: \'#F6A623\',' ).'
                                     strokeWeight: 5
                                   });
-                                snappedPolyline'.$i.'.setMap(map);
+                                snappedPolyline'.$i.'.setMap(map' . $uid . ');
                             ';
                         }
                         if ( (!empty($location['circle_radius'])) && (!empty($location['circle_center'])) ) {
@@ -175,11 +176,11 @@ if ( ! function_exists( 'snapmap_build_single' ) ) {
                                       strokeWeight: 2,
                                       '.( !empty($circlefill) ? 'fillColor: \''.$circlefill.'\',' : 'fillColor: \'#FF0000\',' ).'
                                       fillOpacity: 0.35,
-                                      map: map,
+                                      map: map' . $uid . ',
                                       center: decodedCircleCenter'.$i.',
                                       radius: '.$location['circle_radius'].'
                                 });
-                                originalCircle'.$i.'.setMap(map);
+                                originalCircle'.$i.'.setMap(map' . $uid . ');
                             ';
                         }
                 }
@@ -218,7 +219,7 @@ if ( ! function_exists( 'snapmap_build_single' ) ) {
                 for (i = 0; i < locations.length; i++) {  
                   marker = new google.maps.Marker({
                     position: new google.maps.LatLng(locations[i][1], locations[i][2]),
-                    map: map,
+                    map: map' . $uid . ',
                     '.( $marker ? 'icon: image,' : '' ).'
                     animation: google.maps.Animation.DROP
                   });
@@ -228,7 +229,7 @@ if ( ! function_exists( 'snapmap_build_single' ) ) {
                   google.maps.event.addListener(marker, \'click\', (function(marker, i) {
                     return function() {
                       infowindow.setContent(locations[i][0]);
-                      infowindow.open(map, marker);
+                      infowindow.open(map' . $uid . ', marker);
                     }
                   })(marker, i));
                   
@@ -242,8 +243,9 @@ if ( ! function_exists( 'snapmap_build_single' ) ) {
                 $output .= '
                 
                 }
+                google.maps.event.addDomListener(window, \'load\', initMap' . $uid . ');
               </script>
-              '.( empty($enqueue_maps) ? '<script async defer src="https://maps.googleapis.com/maps/api/js?key='.$api_key.'&amp;libraries=geometry&amp;callback=initMap"></script>' : '' ).'
+              
               
             
             ';
@@ -253,5 +255,5 @@ if ( ! function_exists( 'snapmap_build_single' ) ) {
         }
         
         return $output;
-	}
+  }
 }
