@@ -3,8 +3,8 @@ Contributors: pixelwatt
 Donate link: https://pixelwatt.com
 Tags: cmb2, maps
 Requires at least: 4.0
-Tested up to: 4.7.5
-Stable tag: 0.9.8
+Tested up to: 5.0.1
+Stable tag: 0.9.81
 License: GPLv2 or later
 License URI: http://www.gnu.org/licenses/gpl-2.0.html
 
@@ -79,6 +79,10 @@ Not yet, but it will.
 Also not yet, but this is an upcoming feature.
 
 == Changelog ==
+
+= 0.9.81 =
+
+Added the capability of attaching content to the map by CSS ID using the snapmap_build_single() function.
 
 = 0.9.8 =
 

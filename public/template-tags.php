@@ -5,7 +5,7 @@ if ( ! defined( 'ABSPATH' ) ) {
 }
 
 if ( ! function_exists( 'snapmap_build_single' ) ) {
-  function snapmap_build_single($id='',$width='100%',$height='400px',$zoom='16', $center=false, $marker=false, $mapquery=false, $mapstyle=false, $terrain=false, $uid = '') {
+  function snapmap_build_single($id='',$width='100%',$height='400px',$zoom='16', $center=false, $marker=false, $mapquery=false, $mapstyle=false, $terrain=false, $uid = '', $attach=false) {
       $plugin_options = get_option( 'cmb2-roadway-segments' );
       
       if (empty($id)) {
@@ -45,7 +45,7 @@ if ( ! function_exists( 'snapmap_build_single' ) ) {
                 <div id="map' . $uid . '" style="width: '.$width.'; height: '.$height.'; margin-bottom: 30px;"></div>
                 <script>
                 
-                
+                ' . ( $attach ? 'var card' . $uid . ' = document.getElementById(\'' . $attach['id'] . '\');' : '' ) . '
                 
                 function initMap' . $uid . '() {
                 <!-- / Styles a map in night mode. -->
@@ -61,6 +61,8 @@ if ( ! function_exists( 'snapmap_build_single' ) ) {
                 rotateControl: false'.( !empty($styles) ? ',
                 ' : '' );
                 
+                
+
                 if ($mapstyle) {
                     $output .= 'styles: '.$mapstyle;
                 } elseif (!empty($styles)) {
@@ -83,7 +85,10 @@ if ( ! function_exists( 'snapmap_build_single' ) ) {
                     ';
                 }
                 
-                
+                if ( $attach ) {
+                  $output .= 'map' . $uid . '.controls[google.maps.ControlPosition.' . $attach['position'] . '].push(card' . $uid . '); 
+                  ';
+                }
                 
                 
                 if ($mapquery) {

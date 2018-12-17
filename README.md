@@ -52,6 +52,10 @@ Also yes, but only by using the template tag.
 
 ## Changelog
 
+### 0.9.81
+
+Added the capability of attaching content to the map by CSS ID using the snapmap_build_single() function.
+
 ### 0.9.8
 
 Added the capability to display multiple maps on one page using the snapmap_build_single() function by passing a unique ID for additional maps.
