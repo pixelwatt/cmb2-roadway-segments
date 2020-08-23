@@ -12,8 +12,9 @@ This plugin extends CMB2 by adding a new fieldtype called 'snapmap' that allows 
 
 This plugin requires CMB2 and a Google Maps API key.
 
-The Google Maps API key must have access to the following APIs:
-* Google Maps JavaScript API
+The Google Maps API key must have access to the Google Maps JavaScript API.
+
+Unless you disable the associated features during plugin configutation, you will also need to enable:
 * Google Maps Roads API
 * Google Places API Web Service 
 
@@ -51,6 +52,13 @@ Yes, but only by using the template tag.
 Also yes, but only by using the template tag.
 
 ## Changelog
+
+### 0.9.9
+
+Changes:
+* Added a plugin option to disable features in the map editor requiring use of geocoding. If disabled, the Places API Web Service will not need to be enabled for the provided API key.
+* Added a plugin option to disable snap-to-road functionality. If disabled, the Roads API will not need to be enabled for the provided key.
+* Reformated over 1000 lines of code to adhere to Wordpress core code standards.
 
 ### 0.9.81
 

@@ -1,10 +1,10 @@
 === CMB2 Roadway Segments ===
 Contributors: pixelwatt
-Donate link: https://pixelwatt.com
+Donate link: https://robclark.io
 Tags: cmb2, maps
 Requires at least: 4.0
-Tested up to: 5.0.1
-Stable tag: 0.9.81
+Tested up to: 5.5
+Stable tag: 0.9.9
 License: GPLv2 or later
 License URI: http://www.gnu.org/licenses/gpl-2.0.html
 
@@ -16,8 +16,9 @@ This plugin extends CMB2 by adding a new fieldtype called 'snapmap' that allows 
 
 This plugin requires CMB2 and a Google Maps API key.
 
-The Google Maps API key must have access to the following APIs:
-* Google Maps JavaScript API
+The Google Maps API key must have access to the Google Maps JavaScript API.
+
+Unless you disable the associated features during plugin configutation, you will also need to enable:
 * Google Maps Roads API
 * Google Places API Web Service 
 
@@ -31,20 +32,20 @@ The Google Maps API key must have access to the following APIs:
 
 `$cmb_demo->add_field( array(
 	'name' => 'Segment',
-    	'desc' => '',
-    	'id' => $prefix . 'segment',
+    'desc' => '',
+    'id' => $prefix . 'segment',
     'limit_drawing' => false,
-    	'type' => 'snapmap',
+    'type' => 'snapmap',
 ) );`
 
 ...or to only allow map markers (disable segments), set 'limit_drawing' to true...
 
 `$cmb_demo->add_field( array(
 	'name' => 'Segment',
-    	'desc' => '',
-    	'id' => $prefix . 'segment',
+    'desc' => '',
+    'id' => $prefix . 'segment',
     'limit_drawing' => true,
-    	'type' => 'snapmap',
+    'type' => 'snapmap',
 ) );`
 
 = Displaying =
@@ -79,6 +80,13 @@ Not yet, but it will.
 Also not yet, but this is an upcoming feature.
 
 == Changelog ==
+
+= 0.9.9 =
+
+Changes:
+* Added a plugin option to disable features in the map editor requiring use of geocoding. If disabled, the Places API Web Service will not need to be enabled for the provided API key.
+* Added a plugin option to disable snap-to-road functionality. If disabled, the Roads API will not need to be enabled for the provided key.
+* Reformated over 1000 lines of code to adhere to Wordpress core code standards.
 
 = 0.9.81 =
 

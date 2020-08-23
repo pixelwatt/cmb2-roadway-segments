@@ -69,7 +69,7 @@ class Cmb2_Roadway_Segments {
 	public function __construct() {
 
 		$this->plugin_name = 'cmb2-roadway-segments';
-		$this->version = '0.9.81';
+		$this->version = '0.9.9';
 
 		$this->load_dependencies();
 		$this->set_locale();
@@ -153,15 +153,15 @@ class Cmb2_Roadway_Segments {
 
 		$this->loader->add_action( 'admin_enqueue_scripts', $plugin_admin, 'enqueue_styles' );
 		$this->loader->add_action( 'admin_enqueue_scripts', $plugin_admin, 'enqueue_scripts' );
-		
+
 		// Add menu item
-        $this->loader->add_action( 'admin_menu', $plugin_admin, 'add_plugin_admin_menu' );
-        
-        // Add Settings link to the plugin
-        $plugin_basename = plugin_basename( plugin_dir_path( __DIR__ ) . $this->plugin_name . '.php' );
-        $this->loader->add_filter( 'plugin_action_links_' . $plugin_basename, $plugin_admin, 'add_action_links' );
-        
-        $this->loader->add_action('admin_init', $plugin_admin, 'options_update');
+		$this->loader->add_action( 'admin_menu', $plugin_admin, 'add_plugin_admin_menu' );
+
+		// Add Settings link to the plugin
+		$plugin_basename = plugin_basename( plugin_dir_path( __DIR__ ) . $this->plugin_name . '.php' );
+		$this->loader->add_filter( 'plugin_action_links_' . $plugin_basename, $plugin_admin, 'add_action_links' );
+
+		$this->loader->add_action( 'admin_init', $plugin_admin, 'options_update' );
 
 	}
 
@@ -220,7 +220,7 @@ class Cmb2_Roadway_Segments {
 	public function get_version() {
 		return $this->version;
 	}
-	
+
 
 
 }
