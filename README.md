@@ -1,6 +1,6 @@
 # CMB2 Roadway Segments
 
-![CMB2 Roadway Segments Banner](https://pixelwatt.com/assets/cmb2rs_banner.jpg)
+![CMB2 Roadway Segments Banner](https://pixelwatt.com/assets/cmb2rs_banner_new.jpg)
 
 This plugin adds a new CMB2 fieldtype for drawing roadway segments onto a map and provides a shortcode for display.
 
