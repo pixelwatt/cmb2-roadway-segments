@@ -4,6 +4,13 @@ if ( ! defined( 'ABSPATH' ) ) {
 	return;
 }
 
+if ( ! class_exists( 'CMB2_RS_Map' ) ) {
+	class CMB2_RS_Map {
+		protected $plugin_options = array();
+		protected $geo = array();
+	}
+}
+
 if ( ! function_exists( 'snapmap_build_single' ) ) {
 	function snapmap_build_single( $id = '', $width = '100%', $height = '400px', $zoom = '16', $center = false, $marker = false, $mapquery = false, $mapstyle = false, $terrain = false, $uid = '', $attach = false ) {
 		$plugin_options = get_option( 'cmb2-roadway-segments' );
