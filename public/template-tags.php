@@ -7,7 +7,23 @@ if ( ! defined( 'ABSPATH' ) ) {
 if ( ! class_exists( 'CMB2_RS_Map' ) ) {
 	class CMB2_RS_Map {
 		protected $plugin_options = array();
+		protected $map_options = array();
 		protected $geo = array();
+
+		public function set_options( $args ) {
+			$defaults = array(
+				'id'       => '', 
+				'width'    => '100%', 
+				'height'   => '400px', 
+				'zoom'     => '16',
+				'center'   => false,
+				'marker'   => false,
+				'mapstyle' => false, 
+				'terrain'  => false, 
+				'uid'      => '', 
+				'attach'   => false,
+			);
+		}
 	}
 }
 
