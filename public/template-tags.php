@@ -12,17 +12,20 @@ if ( ! class_exists( 'CMB2_RS_Map' ) ) {
 
 		public function set_options( $args ) {
 			$defaults = array(
-				'id'       => '', 
-				'width'    => '100%', 
-				'height'   => '400px', 
+				'id'       => '',
+				'class'    => 'cmb2-roadway-segments-map',
+				'width'    => '100%',
+				'height'   => '400px',
 				'zoom'     => '16',
 				'center'   => false,
 				'marker'   => false,
-				'mapstyle' => false, 
-				'terrain'  => false, 
-				'uid'      => '', 
+				'mapstyle' => false,
+				'terrain'  => false,
+				'uid'      => '',
 				'attach'   => false,
 			);
+			$this->map_options = wp_parse_args( $args, $defaults );
+			return;
 		}
 	}
 }
