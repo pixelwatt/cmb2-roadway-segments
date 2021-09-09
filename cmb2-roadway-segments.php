@@ -9,14 +9,14 @@
  * that starts the plugin.
  *
  * @link              https://pixelwatt.com
- * @since             0.9.9
+ * @since             0.9.10
  * @package           Cmb2_Roadway_Segments
  *
  * @wordpress-plugin
  * Plugin Name:       CMB2 Roadway Segments
  * Plugin URI:        https://robclark.io
  * Description:       This plugin adds a new CMB2 fieldtype for drawing roadway segments onto a map and provides a shortcode for display. This plugin requires CMB2.
- * Version:           0.9.9
+ * Version:           0.9.10
  * Author:            Rob Clark
  * Author URI:        https://robclark.io
  * License:           GPL-2.0+

@@ -10,8 +10,12 @@ if ( ! class_exists( 'CMB2_RS_Map' ) ) {
 		protected $map_options = array();
 		protected $geo = array();
 
-		public function set_options( $args ) {
-			$defaults = array(
+		function __construct() {
+			// Set plugin options
+			$this->plugin_options = get_option( 'cmb2-roadway-segments' );
+
+			// Set defaults for map options
+			$this->map_options = array(
 				'id'       => '',
 				'class'    => 'cmb2-roadway-segments-map',
 				'width'    => '100%',
@@ -24,8 +28,172 @@ if ( ! class_exists( 'CMB2_RS_Map' ) ) {
 				'uid'      => '',
 				'attach'   => false,
 			);
-			$this->map_options = wp_parse_args( $args, $defaults );
+
+			// Set up arrays for geo
+			$this->geo['polygons'] = array();
+			$this->geo['polylines'] = array();
+			$this->geo['circles'] = array();
+			$this->geo['markers'] = array();
+		}
+
+		public function set_options( $args ) {
+			$this->map_options = wp_parse_args( $args, $this->map_options );
 			return;
+		}
+
+		public function set_plugin_options( $args ) {
+			$this->plugin_options = wp_parse_args( $args, $this->plugin_options );
+			return;
+		}
+
+		public function add_circle( $lat, $lng, $radius ) {
+			$this->geo['circles'][] = array(
+				'lat'    => $lat,
+				'lng'    => $lng,
+				'radius' => $radius,
+			);
+			return;
+		}
+
+		public function add_marker( $lat, $lng, $tooltip ) {
+			$this->geo['markers'][] = array(
+				'lat'     => $lat,
+				'lng'     => $lng,
+				'tooltip' => $tooltip,
+			);
+			return;
+		}
+
+		public function build_map() {
+			$api_key = $this->plugin_options['apikey'];
+			$enqueue_maps = $this->plugin_options['enqueue'];
+			$styles = $this->plugin_options['mapstyle'];
+			$strokecolor = $this->plugin_options['strokecolor'];
+			$circlestroke = $this->plugin_options['circlestroke'];
+			$circlefill = $this->plugin_options['circlefill'];
+
+			$controls['fullscreen'] = $this->plugin_options['fullscreen'];
+			$controls['streetview'] = $this->plugin_options['streetview'];
+			$controls['maptype'] = $this->plugin_options['maptype'];
+
+			$output = '';
+
+			if ( ! empty( $api_key ) ) {
+				$output .= '
+					' . ( empty( $enqueue_maps ) ? ( empty( $this->map_options['uid'] ) ? '<script src="https://maps.googleapis.com/maps/api/js?key=' . $api_key . '&amp;libraries=geometry"></script>' : '' ) : '' ) . '
+					<div id="map' . $this->map_options['uid'] . '" style="width: ' . $this->map_options['width'] . '; height: ' . $this->map_options['height'] . '; margin-bottom: 30px;"></div>
+					<script>
+					
+					' . ( $this->map_options['attach'] ? 'var card' . $this->map_options['uid'] . ' = document.getElementById(\'' . $this->map_options['attach']['id'] . '\');' : '' ) . '
+					
+					function initMap' . $this->map_options['uid'] . '() {
+					<!-- / Styles a map in night mode. -->
+					var map' . $this->map_options['uid'] . ' = new google.maps.Map(document.getElementById("map' . $this->map_options['uid'] . '"), {
+					' . ( $this->map_options['center'] ? 'center: {lat: ' . $this->map_options['center']['lat'] . ', lng: ' . $this->map_options['center']['lng'] . '},' : 'center: {lat: 35.045148, lng: -85.311511},' ) . '
+					zoom: ' . $this->map_options['zoom'] . ',
+					scrollwheel: false,
+					' . ( $controls['maptype'] ? 'mapTypeControl: true,' : 'mapTypeControl: false,' ) . '
+					' . ( $controls['streetview'] ? 'streetViewControl: true,' : 'streetViewControl: false,' ) . '
+					' . ( $controls['fullscreen'] ? 'fullscreenControl: true,' : 'fullscreenControl: false,' ) . '
+					zoomControl: true,
+					' . ( $this->map_options['terrain'] ? 'mapTypeId: \'terrain\',' : '' ) . '
+					rotateControl: false' . ( ! empty( $styles ) ? ',
+					' : '' );
+
+				if ( $this->map_options['mapstyle'] ) {
+					$output .= 'styles: ' . $this->map_options['mapstyle'];
+				} elseif ( ! empty( $styles ) ) {
+					$output .= 'styles: ' . $styles;
+				}
+
+				$output .= '});';
+
+				if ( $this->map_options['marker'] ) {
+					$output .= '
+						var image = {
+						url: \'' . $this->map_options['marker']['url'] . '\',
+						' . ( isset( $this->map_options['marker']['size'] ) ? 'size: new google.maps.Size(' . $this->map_options['marker']['size'] . '),' : '' ) . '
+						origin: new google.maps.Point(' . $this->map_options['marker']['origin'] . '),
+						anchor: new google.maps.Point(' . $this->map_options['marker']['anchor'] . ')' . ( isset( $this->map_options['marker']['scaledSize'] ) ? ',' : '' ) . '
+						' . ( isset( $this->map_options['marker']['scaledSize'] ) ? 'scaledSize: new google.maps.Size(' . $this->map_options['marker']['scaledSize'] . ')' : '' ) . '
+						};
+					';
+				}
+	
+				if ( $this->map_options['attach'] ) {
+					$output .= 'map' . $this->map_options['uid'] . '.controls[google.maps.ControlPosition.' . $this->map_options['attach']['position'] . '].push(card' . $this->map_options['uid'] . '); 
+					  ';
+				}
+
+				if ( ! empty( $this->geo['circles'] ) ) {
+					$i = 1;
+					foreach ( $this->geo['circles'] as $circle ) {
+						$output .= '
+							var originalCircle' . $i . ' = new google.maps.Circle({
+								' . ( ! empty( $circlestroke ) ? 'strokeColor: \'' . $circlestroke . '\',' : 'strokeColor: \'#FF0000\',' ) . '
+								strokeOpacity: 0.6,
+								strokeWeight: 2,
+								' . ( ! empty( $circlefill ) ? 'fillColor: \'' . $circlefill . '\',' : 'fillColor: \'#FF0000\',' ) . '
+								fillOpacity: 0.2,
+								map: map' . $this->map_options['uid'] . ',
+								center: {lat: ' . $circle['lat'] . ', lng: ' . $circle['lng'] . '},
+								radius: ' . $circle['radius'] . '
+							});
+							originalCircle' . $i . '.setMap(map' . $this->map_options['uid'] . ');
+						';
+						$i++;
+					}
+				}
+
+				$output .= 'var locations = [';
+				if ( ! empty( $this->geo['markers'] ) ) {
+					$i = 1;
+					foreach ( $this->geo['markers'] as $marker ) {
+						$output .= '[\'' . addslashes( $marker['tooltip'] ) . '\',' . $marker['lat'] . ', ' . $marker['lng'] . ', \'' . $i . '\'],';
+						$i++;
+					}
+				}
+
+				$output .= '
+				];
+				
+				var infowindow = new google.maps.InfoWindow();
+
+				var marker, i;
+				var markers = [];
+				
+				for (i = 0; i < locations.length; i++) {  
+				marker = new google.maps.Marker({
+					position: new google.maps.LatLng(locations[i][1], locations[i][2]),
+					map: map' . $this->map_options['uid'] . ',
+					' . ( $this->map_options['marker'] ? 'icon: image,' : '' ) . '
+					animation: google.maps.Animation.DROP
+				});
+				
+				markers.push(marker);
+				
+				google.maps.event.addListener(marker, \'click\', (function(marker, i) {
+					return function() {
+					infowindow.setContent(locations[i][0]);
+					infowindow.open(map' . $this->map_options['uid'] . ', marker);
+					}
+				})(marker, i));
+				
+
+				}
+				
+				
+				';
+
+				$output .= '
+					
+					}
+					google.maps.event.addDomListener(window, \'load\', initMap' . $this->map_options['uid'] . ');
+				</script>
+				';
+			}
+
+			return $output;
 		}
 	}
 }

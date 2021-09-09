@@ -53,6 +53,10 @@ Also yes, but only by using the template tag.
 
 ## Changelog
 
+### 0.9.10
+
+This release includes an early release of the CMB2_RS_Map class, which can be used to better build complex maps.
+
 ### 0.9.9
 
 Changes:
