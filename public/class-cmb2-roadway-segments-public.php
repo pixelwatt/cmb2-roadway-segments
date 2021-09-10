@@ -676,6 +676,11 @@ class Cmb2_Roadway_Segments_Public {
 		<div class="cmb2-roadway-segments-fields" id="accordion">
 			<h3>Marker Options</h3>
 			<div class="cmb2-roadway-segments-manual">
+		<?php
+			if ( isset( $field->args['hide_tooltip'] ) ) {
+				// Don't add the tooltip field
+			} else {
+		?>
 				<div class="marker-lat-field">
 					<p><label for="<?php echo $field_type->_id( '_tooltip' ); ?>">Marker Tooltip Label</label></p>
 					<?php
@@ -689,6 +694,9 @@ class Cmb2_Roadway_Segments_Public {
 						);
 					?>
 				</div>
+		<?php
+			}
+		?>
 				<div class="marker-lat-field">
 					<p><label for="<?php echo $field_type->_id( '_lat' ); ?>">Marker Latitude (Manual Entry)</label></p>
 					<?php

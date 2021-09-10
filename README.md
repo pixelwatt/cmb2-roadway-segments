@@ -53,6 +53,10 @@ Also yes, but only by using the template tag.
 
 ## Changelog
 
+### 0.9.11
+
+This release includes tweaks to circle geometry opacity and adds support to hide the map marker's tooltip field via a field argument.
+
 ### 0.9.10
 
 This release includes an early release of the CMB2_RS_Map class, which can be used to better build complex maps.

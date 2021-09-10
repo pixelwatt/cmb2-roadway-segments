@@ -131,10 +131,10 @@ if ( ! class_exists( 'CMB2_RS_Map' ) ) {
 						$output .= '
 							var originalCircle' . $i . ' = new google.maps.Circle({
 								' . ( ! empty( $circlestroke ) ? 'strokeColor: \'' . $circlestroke . '\',' : 'strokeColor: \'#FF0000\',' ) . '
-								strokeOpacity: 0.6,
+								strokeOpacity: 0.4,
 								strokeWeight: 2,
 								' . ( ! empty( $circlefill ) ? 'fillColor: \'' . $circlefill . '\',' : 'fillColor: \'#FF0000\',' ) . '
-								fillOpacity: 0.2,
+								fillOpacity: 0.15,
 								map: map' . $this->map_options['uid'] . ',
 								center: {lat: ' . $circle['lat'] . ', lng: ' . $circle['lng'] . '},
 								radius: ' . $circle['radius'] . '
