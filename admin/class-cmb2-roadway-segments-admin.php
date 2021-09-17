@@ -155,6 +155,7 @@ class Cmb2_Roadway_Segments_Admin {
 		$valid['strokecolor'] = $input['strokecolor'];
 		$valid['circlestroke'] = $input['circlestroke'];
 		$valid['circlefill'] = $input['circlefill'];
+		$valid['mapcenter'] = $input['mapcenter'];
 
 		return $valid;
 	}

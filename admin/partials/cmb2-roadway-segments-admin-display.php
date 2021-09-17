@@ -36,6 +36,7 @@
 			$strokecolor = $options['strokecolor'];
 			$circlestroke = ( isset( $options['circlestroke'] ) ? $options['circlestroke'] : '' );
 			$circlefill = ( isset( $options['circlefill'] ) ? $options['circlefill'] : '' );
+			$mapcenter = $options['mapcenter'];
 
 			settings_fields( $this->plugin_name );
 			do_settings_sections( $this->plugin_name );
@@ -101,6 +102,25 @@
 									<span><?php _e( '<strong>Do not enqueue Google Maps JS.</strong>', 'cmb2-roadway-segments' ); ?></span>
 								</label>
 								<p class="description">Only use if another copy of the v3 API is being loaded by another plugin with the drawing and places API. API key still required for roadway snapping.</p>
+								</fieldset>
+							</td>
+						</tr>
+					</tbody>
+				</table>
+
+			<h2 class="title">Editor Field</h2>
+
+				<table class="form-table">
+					<tbody>
+						<tr>
+							<th scope="row">
+								<label for="<?php echo $this->plugin_name; ?>-mapcenter">Map Center</label>
+							</th>
+							<td>
+								<fieldset>
+								<legend class="screen-reader-text"><span><?php _e( 'Map Center', 'cmb2-roadway-segments' ); ?></span></legend>
+								<input type="text" class="regular-text" id="<?php echo $this->plugin_name; ?>-mapcenter" name="<?php echo $this->plugin_name; ?>[mapcenter]" value="<?php echo( ! empty( $mapcenter ) ? $mapcenter : '' ); ?>" />
+								<p class="description">Provide coordinates for the map's center.</p>
 								</fieldset>
 							</td>
 						</tr>
