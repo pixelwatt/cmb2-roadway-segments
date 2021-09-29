@@ -515,6 +515,7 @@ class Cmb2_Roadway_Segments_Public {
 				poly.setMap(null);
 				var encodeString = google.maps.geometry.encoding.encodePath(polypath);
 				jQuery("textarea[name=\'' . $field->args['id'] . '[polygon_array]\']").val(encodeString);
+				jQuery("textarea[name=\'' . $field->args['id'] . '[polygon_array_coords]\']").val(JSON.stringify(polypath.Be));
 
 				  if (typeof snappedPolygon !== \'undefined\') { snappedPolygon.setMap(null); }
 				  snappedPolygon = new google.maps.Polygon({
@@ -781,6 +782,20 @@ class Cmb2_Roadway_Segments_Public {
 									'name'  => $field_type->_name( '[polygon_array]' ),
 									'id'    => $field_type->_id( '_polygon_array' ),
 									'value' => $value['polygon_array'],
+									'desc'  => '',
+								)
+							);
+						?>
+					</div>
+
+					<div class="marker-lat-field">
+						<p><label for="<?php echo $field_type->_id( '_polygon_array_coords' ); ?>">Polygon Coordinate JSON</label></p>
+						<?php
+							echo $field_type->textarea(
+								array(
+									'name'  => $field_type->_name( '[polygon_array_coords]' ),
+									'id'    => $field_type->_id( '_polygon_array_coords' ),
+									'value' => $value['polygon_array_coords'],
 									'desc'  => '',
 								)
 							);
