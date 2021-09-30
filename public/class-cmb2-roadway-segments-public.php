@@ -338,6 +338,7 @@ class Cmb2_Roadway_Segments_Public {
 			echo '
 				map = new google.maps.Map(document.getElementById(\'snapmap-map\'), mapOptions);
 			';
+			
 			if ( 1 != $disable_geo ) {
 				echo '
 					map.controls[google.maps.ControlPosition.TOP_RIGHT].push(card);
@@ -395,6 +396,22 @@ class Cmb2_Roadway_Segments_Public {
 						});
 
 			
+				';
+			}
+			if ( isset( $field->args['overlay'] ) ) {
+				echo '
+					var imageBounds = {
+					    north: ' . $field->args['overlay']['north'] . ',
+					    south: ' . $field->args['overlay']['south'] . ',
+					    east: ' . $field->args['overlay']['east'] . ',
+					    west: ' . $field->args['overlay']['west'] . ',
+					  };
+					  
+					  var historicalOverlay = new google.maps.GroundOverlay(
+					    \'' . $field->args['overlay']['image'] . '\',
+					    imageBounds
+					  );
+					  historicalOverlay.setMap(map);
 				';
 			}
 
