@@ -321,7 +321,21 @@ class Cmb2_Roadway_Segments_Public {
 				';
 			}
 			echo '
-				scrollwheel: false,
+				scrollwheel: false,';
+
+			if ( isset( $field->args['bounds'] ) ) {
+					echo '
+					restriction: {
+				      latLngBounds: {
+						    north: ' . $field->args['bounds']['north'] . ',
+						    south: ' . $field->args['bounds']['south'] . ',
+						    east: ' . $field->args['bounds']['east'] . ',
+						    west: ' . $field->args['bounds']['west'] . ',
+					  },
+				      strictBounds: true,
+				    },';
+				}
+			echo '
 				mapTypeControl: false,
 				streetViewControl: false,
 				fullscreenControl: true
