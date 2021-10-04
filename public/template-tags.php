@@ -168,7 +168,7 @@ if ( ! class_exists( 'CMB2_RS_Map' ) ) {
 					$i = 1;
 					foreach ( $this->geo['polygons'] as $polygon ) {
 						$output .= '
-							var decodedPolygon' . $i . ' = google.maps.geometry.encoding.decodePath(\'' . $polygon['path'] . '\');
+							var decodedPolygon' . $i . ' = JSON.parse(\'' . $polygon['path'] . '\');
 							var originalPolygon' . $i . ' = new google.maps.Polygon({
 							  paths: decodedPolygon' . $i . ',
 							  ' . ( ! empty( $circlestroke ) ? 'strokeColor: \'' . $circlestroke . '\',' : 'strokeColor: \'#FF0000\',' ) . '

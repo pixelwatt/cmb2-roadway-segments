@@ -53,6 +53,11 @@ Also yes, but only by using the template tag.
 
 ## Changelog
 
+### 1.0.0-beta4
+
+Changes:
+* The encoded polygon string is no longer used for display. Instead, the coordinate array is used.
+
 ### 0.9.11
 
 This release includes tweaks to circle geometry opacity and adds support to hide the map marker's tooltip field via a field argument.

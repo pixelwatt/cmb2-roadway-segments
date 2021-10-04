@@ -446,7 +446,7 @@ class Cmb2_Roadway_Segments_Public {
 
 			if ( ! empty( $location['polygon_array'] ) ) {
 				echo '
-					var decodedPolygon = google.maps.geometry.encoding.decodePath(\'' . $location['polygon_array'] . '\');
+					var decodedPolygon = JSON.parse(\'' . $location['polygon_array_coords'] . '\');
 					var originalPolygon = new google.maps.Polygon({
 					  paths: decodedPolygon,
 					  strokeColor: \'#FF0000\',

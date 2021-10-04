@@ -9,7 +9,7 @@
  * that starts the plugin.
  *
  * @link              https://pixelwatt.com
- * @since             1.0.0-beta3
+ * @since             1.0.0-beta4
  * @package           Cmb2_Roadway_Segments
  *
  * @wordpress-plugin

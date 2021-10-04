@@ -4,7 +4,7 @@ Donate link: https://robclark.io
 Tags: cmb2, maps
 Requires at least: 4.0
 Tested up to: 5.8.1
-Stable tag: 1.0.0-beta1
+Stable tag: 1.0.0-beta3
 License: GPLv2 or later
 License URI: http://www.gnu.org/licenses/gpl-2.0.html
 
@@ -80,6 +80,11 @@ Not yet, but it will.
 Also not yet, but this is an upcoming feature.
 
 == Changelog ==
+
+= 1.0.0-beta4 =
+
+Changes:
+* The encoded polygon string is no longer used for display. Instead, the coordinate array is used.
 
 = 0.9.11 =
 
