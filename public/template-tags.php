@@ -27,6 +27,8 @@ if ( ! class_exists( 'CMB2_RS_Map' ) ) {
 				'terrain'  => false,
 				'uid'      => '',
 				'attach'   => false,
+				'bounds'   => false,
+				'overlay'  => false,
 			);
 
 			// Set up arrays for geo
@@ -91,8 +93,20 @@ if ( ! class_exists( 'CMB2_RS_Map' ) ) {
 					var map' . $this->map_options['uid'] . ' = new google.maps.Map(document.getElementById("map' . $this->map_options['uid'] . '"), {
 					' . ( $this->map_options['center'] ? 'center: {lat: ' . $this->map_options['center']['lat'] . ', lng: ' . $this->map_options['center']['lng'] . '},' : 'center: {lat: 35.045148, lng: -85.311511},' ) . '
 					zoom: ' . $this->map_options['zoom'] . ',
-					scrollwheel: false,
-					' . ( $controls['maptype'] ? 'mapTypeControl: true,' : 'mapTypeControl: false,' ) . '
+					scrollwheel: false,';
+				if ( isset( $this->map_options['bounds'] ) ) {
+					$output .= '
+					restriction: {
+				      latLngBounds: {
+						    north: ' . $this->map_options['bounds']['north'] . ',
+						    south: ' . $this->map_options['bounds']['south'] . ',
+						    east: ' . $this->map_options['bounds']['east'] . ',
+						    west: ' . $this->map_options['bounds']['west'] . ',
+					  },
+				      strictBounds: true,
+				    },';
+				}
+				$output .= ( $controls['maptype'] ? 'mapTypeControl: true,' : 'mapTypeControl: false,' ) . '
 					' . ( $controls['streetview'] ? 'streetViewControl: true,' : 'streetViewControl: false,' ) . '
 					' . ( $controls['fullscreen'] ? 'fullscreenControl: true,' : 'fullscreenControl: false,' ) . '
 					zoomControl: true,
@@ -107,6 +121,23 @@ if ( ! class_exists( 'CMB2_RS_Map' ) ) {
 				}
 
 				$output .= '});';
+
+				if ( isset( $this->map_options['overlay'] ) ) {
+					$output .= '
+						var imageBounds = {
+						    north: ' . $this->map_options['overlay']['north'] . ',
+						    south: ' . $this->map_options['overlay']['south'] . ',
+						    east: ' . $this->map_options['overlay']['east'] . ',
+						    west: ' . $this->map_options['overlay']['west'] . ',
+						};
+						  
+						var historicalOverlay = new google.maps.GroundOverlay(
+						    \'' . $this->map_options['overlay']['image'] . '\',
+						    imageBounds
+						);
+						historicalOverlay.setMap(map' . $this->map_options['uid'] . ');
+					';
+				}
 
 				if ( $this->map_options['marker'] ) {
 					$output .= '
