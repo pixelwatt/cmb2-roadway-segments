@@ -66,6 +66,14 @@ if ( ! class_exists( 'CMB2_RS_Map' ) ) {
 			return;
 		}
 
+		public function add_polygon( $path, $tooltip ) {
+			$this->geo['polygons'][] = array(
+				'path'     => $path,
+				'tooltip'  => $tooltip,
+			);
+			return;
+		}
+
 		public function build_map() {
 			$api_key = $this->plugin_options['apikey'];
 			$enqueue_maps = $this->plugin_options['enqueue'];
@@ -154,6 +162,26 @@ if ( ! class_exists( 'CMB2_RS_Map' ) ) {
 				if ( $this->map_options['attach'] ) {
 					$output .= 'map' . $this->map_options['uid'] . '.controls[google.maps.ControlPosition.' . $this->map_options['attach']['position'] . '].push(card' . $this->map_options['uid'] . '); 
 					  ';
+				}
+
+				if ( ! empty( $this->geo['polygons'] ) ) {
+					$i = 1;
+					foreach ( $this->geo['polygons'] as $polygon ) {
+						$output .= '
+							var decodedPolygon' . $i . ' = google.maps.geometry.encoding.decodePath(\'' . $polygon['path'] . '\');
+							var originalPolygon' . $i . ' = new google.maps.Polygon({
+							  paths: decodedPolygon' . $i . ',
+							  ' . ( ! empty( $circlestroke ) ? 'strokeColor: \'' . $circlestroke . '\',' : 'strokeColor: \'#FF0000\',' ) . '
+							  strokeOpacity: 0.8,
+							  strokeWeight: 2,
+							  ' . ( ! empty( $circlefill ) ? 'fillColor: \'' . $circlefill . '\',' : 'fillColor: \'#FF0000\',' ) . '
+							  fillOpacity: 0.35,
+							  map: map' . $this->map_options['uid'] . ',
+							});
+							originalPolygon' . $i . '.setMap(map' . $this->map_options['uid'] . ');
+						';
+						$i++;
+					}
 				}
 
 				if ( ! empty( $this->geo['circles'] ) ) {
