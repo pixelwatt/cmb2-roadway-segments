@@ -499,7 +499,7 @@ class Cmb2_Roadway_Segments_Public {
 				drawingControlOptions: {
 				  position: google.maps.ControlPosition.TOP_LEFT,
 				  
-				  ' . ( isset( $field->args['limit_drawing'] ) ? 'drawingModes: [\'marker\']' : 'drawingModes: [\'marker\', \'polyline\', \'circle\', \'polygon\']' ) . '
+				  ' . ( isset( $field->args['limit_drawing'] ) ? 'drawingModes: [\'marker\']' : 'drawingModes: [\'marker\', ' . ( isset( $field->args['disable_polylines'] ) ? '' : '\'polyline\', ' ) . ( isset( $field->args['disable_circles'] ) ? '' : '\'circle\', ' ) . '\'polygon\']' ) . '
 				},
 				polylineOptions: {
 				  strokeColor: \'#696969\',
