@@ -18,6 +18,7 @@ if ( ! class_exists( 'CMB2_RS_Map' ) ) {
 			$this->map_options = array(
 				'id'       => '',
 				'class'    => 'cmb2-roadway-segments-map',
+				'geolocation' => false,
 				'width'    => '100%',
 				'height'   => '400px',
 				'zoom'     => '16',
@@ -90,11 +91,13 @@ if ( ! class_exists( 'CMB2_RS_Map' ) ) {
 
 			if ( ! empty( $api_key ) ) {
 				$output .= '
+					' . ( $this->map_options['geolocation'] ? '<a class="cmb2-rs-glcontrol" id="glcontrol' . $this->map_options['uid'] . '"><span>Show My Location</span></a>' : '' ) . '
 					' . ( empty( $enqueue_maps ) ? ( empty( $this->map_options['uid'] ) ? '<script src="https://maps.googleapis.com/maps/api/js?key=' . $api_key . '&amp;libraries=geometry"></script>' : '' ) : '' ) . '
 					<div id="map' . $this->map_options['uid'] . '" style="width: ' . $this->map_options['width'] . '; height: ' . $this->map_options['height'] . '; margin-bottom: 30px;"></div>
 					<script>
 					
 					' . ( $this->map_options['attach'] ? 'var card' . $this->map_options['uid'] . ' = document.getElementById(\'' . $this->map_options['attach']['id'] . '\');' : '' ) . '
+					' . ( $this->map_options['geolocation'] ? 'var glcontrol' . $this->map_options['uid'] . ' = document.getElementById(\'glcontrol' . $this->map_options['uid'] . '\');' : '' ) . '
 					
 					function initMap' . $this->map_options['uid'] . '() {
 					<!-- / Styles a map in night mode. -->
@@ -103,6 +106,7 @@ if ( ! class_exists( 'CMB2_RS_Map' ) ) {
 					zoom: ' . $this->map_options['zoom'] . ',
 					scrollwheel: false,';
 				if ( isset( $this->map_options['bounds'] ) ) {
+					if ( is_array( $this->map_options['bounds'] ) ) {
 					$output .= '
 					restriction: {
 				      latLngBounds: {
@@ -113,6 +117,7 @@ if ( ! class_exists( 'CMB2_RS_Map' ) ) {
 					  },
 				      strictBounds: true,
 				    },';
+					}
 				}
 				$output .= ( $controls['maptype'] ? 'mapTypeControl: true,' : 'mapTypeControl: false,' ) . '
 					' . ( $controls['streetview'] ? 'streetViewControl: true,' : 'streetViewControl: false,' ) . '
@@ -161,6 +166,42 @@ if ( ! class_exists( 'CMB2_RS_Map' ) ) {
 	
 				if ( $this->map_options['attach'] ) {
 					$output .= 'map' . $this->map_options['uid'] . '.controls[google.maps.ControlPosition.' . $this->map_options['attach']['position'] . '].push(card' . $this->map_options['uid'] . '); 
+					  ';
+				}
+				if ( $this->map_options['geolocation'] ) {
+					$output .= '
+						map' . $this->map_options['uid'] . '.controls[google.maps.ControlPosition.TOP_RIGHT].push(glcontrol' . $this->map_options['uid'] . '); 
+						glcontrol' . $this->map_options['uid'] . '.addEventListener("click", () => {
+							if ( glcontrol' . $this->map_options['uid'] . '.classList.contains(\'enabled\') ) {
+								glcontrol' . $this->map_options['uid'] . '.classList.remove(\'enabled\');
+								clearTimeout(autoUpdate);
+							} else {
+								glcontrol' . $this->map_options['uid'] . '.classList.add(\'enabled\');
+								autoUpdate();
+								setTimeout(autoUpdate, 5000);
+							}
+							
+						});
+						var glmarker;
+						function autoUpdate() {
+						  	navigator.geolocation.getCurrentPosition(function(position) {  
+						    	var newPoint = new google.maps.LatLng(position.coords.latitude,position.coords.longitude);
+							    if (glmarker) {
+							      // Marker already created - Move it
+							      glmarker.setPosition(newPoint);
+							    }
+							    else {
+							      // Marker does not exist - Create it
+							      glmarker = new google.maps.Marker({
+							        position: newPoint,
+							        map: map' . $this->map_options['uid'] . ',
+									' . ( $this->map_options['marker'] ? 'icon: image,' : '' ) . '
+							      });
+							      map' . $this->map_options['uid'] . '.setCenter(newPoint);
+							    }
+						  	});
+						}
+
 					  ';
 				}
 
