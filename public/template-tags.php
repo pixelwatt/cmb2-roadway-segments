@@ -19,6 +19,17 @@ if ( ! class_exists( 'CMB2_RS_Map' ) ) {
 				'id'       => '',
 				'class'    => 'cmb2-roadway-segments-map',
 				'geolocation' => false,
+				'geolocation_bounds' => false,
+				'geolocation_options' => array(
+					'marker' => array(
+						'url' => '',
+						'size' => '',
+						'anchor' => '',
+						'origin' => '',
+						'scaledSize' => '',
+					),
+					'btn_content' => '',
+				),
 				'width'    => '100%',
 				'height'   => '400px',
 				'zoom'     => '16',
@@ -91,7 +102,7 @@ if ( ! class_exists( 'CMB2_RS_Map' ) ) {
 
 			if ( ! empty( $api_key ) ) {
 				$output .= '
-					' . ( $this->map_options['geolocation'] ? '<a class="cmb2-rs-glcontrol" id="glcontrol' . $this->map_options['uid'] . '"><span>Show My Location</span></a>' : '' ) . '
+					' . ( $this->map_options['geolocation'] ? '<a class="cmb2-rs-glcontrol" id="glcontrol' . $this->map_options['uid'] . '">' . $this->map_options['geolocation_options']['btn_content'] . '<span>Show My Location</span></a>' : '' ) . '
 					' . ( empty( $enqueue_maps ) ? ( empty( $this->map_options['uid'] ) ? '<script src="https://maps.googleapis.com/maps/api/js?key=' . $api_key . '&amp;libraries=geometry"></script>' : '' ) : '' ) . '
 					<div id="map' . $this->map_options['uid'] . '" style="width: ' . $this->map_options['width'] . '; height: ' . $this->map_options['height'] . '; margin-bottom: 30px;"></div>
 					<script>
@@ -163,6 +174,18 @@ if ( ! class_exists( 'CMB2_RS_Map' ) ) {
 						};
 					';
 				}
+
+				if ( ! empty( $this->map_options['geolocation_options']['marker']['url'] ) ) {
+					$output .= '
+						var geoimage = {
+						url: \'' . $this->map_options['geolocation_options']['marker']['url'] . '\',
+						' . ( isset( $this->map_options['geolocation_options']['marker']['size'] ) ? 'size: new google.maps.Size(' . $this->map_options['geolocation_options']['marker']['size'] . '),' : '' ) . '
+						origin: new google.maps.Point(' . $this->map_options['geolocation_options']['marker']['origin'] . '),
+						anchor: new google.maps.Point(' . $this->map_options['geolocation_options']['marker']['anchor'] . ')' . ( isset( $this->map_options['geolocation_options']['marker']['scaledSize'] ) ? ',' : '' ) . '
+						' . ( isset( $this->map_options['geolocation_options']['marker']['scaledSize'] ) ? 'scaledSize: new google.maps.Size(' . $this->map_options['geolocation_options']['marker']['scaledSize'] . ')' : '' ) . '
+						};
+					';
+				}
 	
 				if ( $this->map_options['attach'] ) {
 					$output .= 'map' . $this->map_options['uid'] . '.controls[google.maps.ControlPosition.' . $this->map_options['attach']['position'] . '].push(card' . $this->map_options['uid'] . '); 
@@ -174,31 +197,62 @@ if ( ! class_exists( 'CMB2_RS_Map' ) ) {
 						glcontrol' . $this->map_options['uid'] . '.addEventListener("click", () => {
 							if ( glcontrol' . $this->map_options['uid'] . '.classList.contains(\'enabled\') ) {
 								glcontrol' . $this->map_options['uid'] . '.classList.remove(\'enabled\');
+								if (glmarker) {
+									glmarker.setMap(null);
+								}
 								clearTimeout(autoUpdate);
 							} else {
 								glcontrol' . $this->map_options['uid'] . '.classList.add(\'enabled\');
 								autoUpdate();
-								setTimeout(autoUpdate, 5000);
 							}
 							
 						});
 						var glmarker;
 						function autoUpdate() {
-						  	navigator.geolocation.getCurrentPosition(function(position) {  
+						  	navigator.geolocation.getCurrentPosition(function(position) {
+					';
+					
+						if ( is_array( $this->map_options['geolocation_bounds'] ) ) {
+							$output .= '
+								if ( Number(position.coords.latitude) <= ' . $this->map_options['geolocation_bounds']['north'] . ' && Number(position.coords.latitude) >= ' . $this->map_options['geolocation_bounds']['south'] . ' && Number(position.coords.longitude) <= ' . $this->map_options['geolocation_bounds']['east'] . ' && Number(position.coords.longitude) >= ' . $this->map_options['geolocation_bounds']['west'] . ' ) {
+							';
+						}
+					
+					$output .= '
 						    	var newPoint = new google.maps.LatLng(position.coords.latitude,position.coords.longitude);
-							    if (glmarker) {
-							      // Marker already created - Move it
-							      glmarker.setPosition(newPoint);
-							    }
-							    else {
-							      // Marker does not exist - Create it
-							      glmarker = new google.maps.Marker({
-							        position: newPoint,
-							        map: map' . $this->map_options['uid'] . ',
-									' . ( $this->map_options['marker'] ? 'icon: image,' : '' ) . '
-							      });
-							      map' . $this->map_options['uid'] . '.setCenter(newPoint);
-							    }
+						    	if ( glcontrol' . $this->map_options['uid'] . '.classList.contains(\'enabled\') ) {
+								    if (glmarker) {
+								      // Marker already created - Move it
+								      glmarker.setPosition(newPoint);
+								      glmarker.setMap(map' . $this->map_options['uid'] . ');
+								    }
+								    else {
+								      // Marker does not exist - Create it
+								      glmarker = new google.maps.Marker({
+								        position: newPoint,
+								        map: map' . $this->map_options['uid'] . ',
+										' . ( ! empty( $this->map_options['geolocation_options']['marker']['url'] ) ? 'icon: geoimage,' : ( $this->map_options['marker'] ? 'icon: image,' : '' ) ) . '
+								      });
+								      map' . $this->map_options['uid'] . '.setCenter(newPoint);
+
+								    }
+							    	setTimeout(autoUpdate, 5000);
+								}
+					';
+					
+						if ( is_array( $this->map_options['geolocation_bounds'] ) ) {
+							$output .= '
+								} else {
+									clearTimeout(autoUpdate);
+									alert("You are currently outside of map bounds!");
+									glcontrol' . $this->map_options['uid'] . '.classList.remove(\'enabled\');
+									
+								}
+							';
+						}
+					
+					$output .= '
+							console.log("Function fired.");
 						  	});
 						}
 
