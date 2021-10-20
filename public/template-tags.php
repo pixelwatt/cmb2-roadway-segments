@@ -147,20 +147,22 @@ if ( ! class_exists( 'CMB2_RS_Map' ) ) {
 				$output .= '});';
 
 				if ( isset( $this->map_options['overlay'] ) ) {
-					$output .= '
-						var imageBounds = {
-						    north: ' . $this->map_options['overlay']['north'] . ',
-						    south: ' . $this->map_options['overlay']['south'] . ',
-						    east: ' . $this->map_options['overlay']['east'] . ',
-						    west: ' . $this->map_options['overlay']['west'] . ',
-						};
-						  
-						var historicalOverlay = new google.maps.GroundOverlay(
-						    \'' . $this->map_options['overlay']['image'] . '\',
-						    imageBounds
-						);
-						historicalOverlay.setMap(map' . $this->map_options['uid'] . ');
-					';
+					if ( is_array( $this->map_options['overlay'] ) ) {
+						$output .= '
+							var imageBounds = {
+							    north: ' . $this->map_options['overlay']['north'] . ',
+							    south: ' . $this->map_options['overlay']['south'] . ',
+							    east: ' . $this->map_options['overlay']['east'] . ',
+							    west: ' . $this->map_options['overlay']['west'] . ',
+							};
+							  
+							var historicalOverlay = new google.maps.GroundOverlay(
+							    \'' . $this->map_options['overlay']['image'] . '\',
+							    imageBounds
+							);
+							historicalOverlay.setMap(map' . $this->map_options['uid'] . ');
+						';
+					}
 				}
 
 				if ( $this->map_options['marker'] ) {
