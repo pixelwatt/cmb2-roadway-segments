@@ -60,7 +60,7 @@ class Cmb2_Roadway_Segments_Admin {
 	 * @since 1.0.0
 	 */
 	public function enqueue_styles() {
-
+		$wp_scripts = wp_scripts();
 		/**
 		 * This function is provided for demonstration purposes only.
 		 *
@@ -73,8 +73,8 @@ class Cmb2_Roadway_Segments_Admin {
 		 * class.
 		 */
 
-		wp_enqueue_style( $this->plugin_name, plugin_dir_url( __FILE__ ) . 'css/cmb2-roadway-segments-admin.css', array(), $this->version, 'all' );
-		wp_enqueue_style( '//code.jquery.com/ui/1.11.4/themes/base/jquery-ui.css', array(), $this->version, 'all' );
+		//wp_enqueue_style( $this->plugin_name, plugin_dir_url( __FILE__ ) . 'css/cmb2-roadway-segments-admin.css', array(), $this->version, 'all' );
+		wp_enqueue_style( 'jquery-ui', 'https://ajax.googleapis.com/ajax/libs/jqueryui/' . $wp_scripts->registered['jquery-ui-core']->ver . '/themes/base/jquery-ui.css', '', '', false );
 
 	}
 
