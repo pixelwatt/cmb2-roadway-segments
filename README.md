@@ -53,6 +53,12 @@ Also yes, but only by using the template tag.
 
 ## Changelog
 
+### 1.0.0-beta5
+
+Changes:
+* The jQuery UI theme is now loaded from CDN, matching the current bundled version of jQuery UI.
+* The encoded polygon string is now fully removed, as encoded polygons now appear to break the map.
+
 ### 1.0.0-beta4
 
 Changes:

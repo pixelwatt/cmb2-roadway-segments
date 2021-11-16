@@ -458,7 +458,7 @@ class Cmb2_Roadway_Segments_Public {
 				';
 			}
 
-			if ( ! empty( $location['polygon_array'] ) ) {
+			if ( ! empty( $location['polygon_array_coords'] ) ) {
 				echo '
 					var decodedPolygon = JSON.parse(\'' . $location['polygon_array_coords'] . '\');
 					var originalPolygon = new google.maps.Polygon({
@@ -544,9 +544,7 @@ class Cmb2_Roadway_Segments_Public {
 				' . ( ! empty( $value['polygon_array'] ) ? 'originalPolygon.setMap(null);' : '' ) . '
 				var polypath = poly.getPath();
 				poly.setMap(null);
-				var encodeString = google.maps.geometry.encoding.encodePath(polypath);
-				jQuery("textarea[name=\'' . $field->args['id'] . '[polygon_array]\']").val(encodeString);
-				jQuery("textarea[name=\'' . $field->args['id'] . '[polygon_array_coords]\']").val(JSON.stringify(polypath.Be));
+				jQuery("textarea[name=\'' . $field->args['id'] . '[polygon_array_coords]\']").val(JSON.stringify(polypath.td));
 
 				  if (typeof snappedPolygon !== \'undefined\') { snappedPolygon.setMap(null); }
 				  snappedPolygon = new google.maps.Polygon({
