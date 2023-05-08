@@ -200,6 +200,20 @@ if ( ! class_exists( 'CMB2_RS_Map' ) ) {
 					';
 				}
 
+				if ( 0 < count( $this->map_options['markers'] ) ) {
+					foreach( $this->map_options['markers'] as $marker ) {
+						$output .= '
+							var ' . $marker['name'] . ' = {
+								url: \'' . $marker['url'] . '\',
+								' . ( isset( $marker['size'] ) ? 'size: new google.maps.Size(' . $marker['size'] . '),' : '' ) . '
+								origin: new google.maps.Point(' . $marker['origin'] . '),
+								anchor: new google.maps.Point(' . $marker['anchor'] . ')' . ( isset( $marker['scaledSize'] ) ? ',' : '' ) . '
+								' . ( isset( $marker['scaledSize'] ) ? 'scaledSize: new google.maps.Size(' . $marker['scaledSize'] . ')' : '' ) . '
+							};
+						';
+					}
+				}
+
 				if ( ! empty( $this->map_options['geolocation_options']['marker']['url'] ) ) {
 					$output .= '
 						var geoimage = {
