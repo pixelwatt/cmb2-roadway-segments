@@ -555,7 +555,7 @@ class Cmb2_Roadway_Segments_Public {
 				' . ( ! empty( $value['polygon_array'] ) ? 'originalPolygon.setMap(null);' : '' ) . '
 				var polypath = poly.getPath();
 				poly.setMap(null);
-				jQuery("textarea[name=\'' . $field->args['id'] . '[polygon_array_coords]\']").val(JSON.stringify(polypath.td));
+				jQuery("textarea[name=\'' . $field->args['id'] . '[polygon_array_coords]\']").val(JSON.stringify(polypath.g));
 
 				  if (typeof snappedPolygon !== \'undefined\') { snappedPolygon.setMap(null); }
 				  snappedPolygon = new google.maps.Polygon({
@@ -940,7 +940,7 @@ class Cmb2_Roadway_Segments_Public {
 
 			if ( 1 != $enqueue_maps ) {
 				// Lets load up some Google Maps JS
-				wp_enqueue_script( 'google-maps-drawing', 'https://maps.googleapis.com/maps/api/js?libraries=drawing,' . ( 1 == $disable_geo ? '' : 'places,' ) . 'geometry&key=' . $api_key, array( 'jquery' ), '1.0.0', false );
+				wp_enqueue_script( 'google-maps-drawing', 'https://maps.googleapis.com/maps/api/js?v=weekly&libraries=drawing,' . ( 1 == $disable_geo ? '' : 'places,' ) . 'geometry&key=' . $api_key, array( 'jquery' ), null, false );
 			}
 		}
 	}
