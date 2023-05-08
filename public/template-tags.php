@@ -4,6 +4,18 @@ if ( ! defined( 'ABSPATH' ) ) {
 	return;
 }
 
+function cmb2_rs_check_array_key( $item, $key ) {
+	$output = false;
+	if ( is_array( $item ) ) {
+		if ( array_key_exists( $key, $item ) ) {
+			if ( ! empty( $item["{$key}"] ) ) {
+				$output = true;
+			}
+		}
+	}
+	return $output;
+}
+
 if ( ! class_exists( 'CMB2_RS_Map' ) ) {
 	class CMB2_RS_Map {
 		protected $plugin_options = array();
