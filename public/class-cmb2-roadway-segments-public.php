@@ -315,14 +315,25 @@ class Cmb2_Roadway_Segments_Public {
 				center: {lat: ' . $value['lat'] . ', lng: ' . $value['lng'] . '},
 				';
 			} else {
-				echo '
-				zoom: 13,
-				center: {lat: 34.725337, lng: -86.585254},
-				';
+				if ( ! empty( $this->wp_cmb2_segment_options['mapcenter'] ) ) {
+					$coords = explode( ',', $this->wp_cmb2_segment_options['mapcenter'] );
+					echo '
+					zoom: 13,
+					center: {lat: ' . $coords[0] . ', lng: ' . $coords[1] . '},
+					';
+				} else {
+					echo '
+					zoom: 13,
+					center: {lat: 34.725337, lng: -86.585254},
+					';
+				}
 			}
 			echo '
 				scrollwheel: false,';
-
+			if ( isset( $field->args['maptype'] ) ) {
+				echo '
+				mapTypeId: \'' . $field->args['maptype'] . '\',';
+			}
 			if ( isset( $field->args['bounds'] ) ) {
 					echo '
 					restriction: {
