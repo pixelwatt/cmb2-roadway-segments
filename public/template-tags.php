@@ -35,6 +35,7 @@ if ( ! class_exists( 'CMB2_RS_Map' ) ) {
 				'zoom'     => '16',
 				'center'   => false,
 				'marker'   => false,
+				'markers'   => array(),
 				'mapstyle' => false,
 				'terrain'  => false,
 				'uid'      => '',
@@ -42,6 +43,18 @@ if ( ! class_exists( 'CMB2_RS_Map' ) ) {
 				'bounds'   => false,
 				'overlay'  => false,
 			);
+
+			/*
+				If adding multiple markers, each marker should be added as an array to 'markers' using the following format:
+				array(
+					'name' => 'myMarker',
+					'url' => '',
+					'size' => '',
+					'anchor' => '',
+					'origin' => '',
+					'scaledSize' => '',
+				)
+			*/
 
 			// Set up arrays for geo
 			$this->geo['polygons'] = array();
@@ -78,11 +91,21 @@ if ( ! class_exists( 'CMB2_RS_Map' ) ) {
 			return;
 		}
 
-		public function add_polygon( $path, $tooltip ) {
+		public function add_polygon( $path, $tooltip, $opts = array() ) {
 			$this->geo['polygons'][] = array(
 				'path'     => $path,
 				'tooltip'  => $tooltip,
+				'opts'	   => $opts,
 			);
+			/*
+				$opts = array(
+					'strokeColor' => '#FF0000',
+					'strokeOpacity' => 0.4,
+					'strokeWeight' => 2,
+					'fillColor' => '#FF0000',
+					'fillOpacity' => 0.15,
+				);
+			*/
 			return;
 		}
 
