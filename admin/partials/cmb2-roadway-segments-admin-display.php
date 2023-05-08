@@ -25,18 +25,18 @@
 			$options = get_option( $this->plugin_name );
 
 			// Cleanup
-			$enqueue = $options['enqueue'];
-			$disableroadways = $options['disableroadways'];
-			$disablegeocoding = $options['disablegeocoding'];
-			$apikey = $options['apikey'];
-			$fullscreen = $options['fullscreen'];
-			$streetview = $options['streetview'];
-			$maptype = $options['maptype'];
-			$mapstyle = $options['mapstyle'];
-			$strokecolor = $options['strokecolor'];
-			$circlestroke = ( isset( $options['circlestroke'] ) ? $options['circlestroke'] : '' );
-			$circlefill = ( isset( $options['circlefill'] ) ? $options['circlefill'] : '' );
-			$mapcenter = $options['mapcenter'];
+			$enqueue = ( cmb2_rs_check_array_key( $options, 'enqueue' ) ? $options['enqueue'] : '' );
+			$disableroadways = ( cmb2_rs_check_array_key( $options, 'disableroadways' ) ? $options['disableroadways'] : '' );
+			$disablegeocoding = ( cmb2_rs_check_array_key( $options, 'disablegeocoding' ) ? $options['disablegeocoding'] : '' );
+			$apikey = ( cmb2_rs_check_array_key( $options, 'apikey' ) ? $options['apikey'] : '' );
+			$fullscreen = ( cmb2_rs_check_array_key( $options, 'fullscreen' ) ? $options['fullscreen'] : '' );
+			$streetview = ( cmb2_rs_check_array_key( $options, 'streetview' ) ? $options['streetview'] : '' );
+			$maptype = ( cmb2_rs_check_array_key( $options, 'maptype' ) ? $options['maptype'] : '' );
+			$mapstyle = ( cmb2_rs_check_array_key( $options, 'mapstyle' ) ? $options['mapstyle'] : '' );
+			$strokecolor = ( cmb2_rs_check_array_key( $options, 'strokecolor' ) ? $options['strokecolor'] : '' );
+			$circlestroke = ( cmb2_rs_check_array_key( $options, 'circlestroke' ) ? $options['circlestroke'] : '' );
+			$circlefill = ( cmb2_rs_check_array_key( $options, 'circlefill' ) ? $options['circlefill'] : '' );
+			$mapcenter = ( cmb2_rs_check_array_key( $options, 'mapcenter' ) ? $options['mapcenter'] : '' );
 
 			settings_fields( $this->plugin_name );
 			do_settings_sections( $this->plugin_name );
