@@ -54,6 +54,7 @@ if ( ! class_exists( 'CMB2_RS_Map' ) ) {
 				'attach'   => false,
 				'bounds'   => false,
 				'overlay'  => false,
+				'mapTypeId' => '',
 			);
 
 			/*
@@ -94,11 +95,12 @@ if ( ! class_exists( 'CMB2_RS_Map' ) ) {
 			return;
 		}
 
-		public function add_marker( $lat, $lng, $tooltip ) {
+		public function add_marker( $lat, $lng, $tooltip, $image = '\'\'' ) {
 			$this->geo['markers'][] = array(
 				'lat'     => $lat,
 				'lng'     => $lng,
 				'tooltip' => $tooltip,
+				'image'   => $image,
 			);
 			return;
 		}
@@ -133,6 +135,16 @@ if ( ! class_exists( 'CMB2_RS_Map' ) ) {
 			$controls['streetview'] = $this->plugin_options['streetview'];
 			$controls['maptype'] = $this->plugin_options['maptype'];
 
+			$mapcenter = '';
+			if ( $this->map_options['center'] ) {
+				$mapcenter = 'center: {lat: ' . $this->map_options['center']['lat'] . ', lng: ' . $this->map_options['center']['lng'] . '},';
+			} elseif ( ! empty( $this->plugin_options['mapcenter'] ) ) { 
+				$coords = explode( ',', $this->plugin_options['mapcenter'] );
+				$mapcenter = 'center: {lat: ' . $coords[0] . ', lng: ' . $coords[1] . '},';
+			} else {
+				$mapcenter = 'center: {lat: 35.045148, lng: -85.311511},';
+			}
+
 			$output = '';
 
 			if ( ! empty( $api_key ) ) {
@@ -148,9 +160,10 @@ if ( ! class_exists( 'CMB2_RS_Map' ) ) {
 					function initMap' . $this->map_options['uid'] . '() {
 					<!-- / Styles a map in night mode. -->
 					var map' . $this->map_options['uid'] . ' = new google.maps.Map(document.getElementById("map' . $this->map_options['uid'] . '"), {
-					' . ( $this->map_options['center'] ? 'center: {lat: ' . $this->map_options['center']['lat'] . ', lng: ' . $this->map_options['center']['lng'] . '},' : 'center: {lat: 35.045148, lng: -85.311511},' ) . '
+					' . $mapcenter . '
 					zoom: ' . $this->map_options['zoom'] . ',
-					scrollwheel: false,';
+					scrollwheel: false,
+					' . ( ! empty( $this->map_options['mapTypeId'] ) ? 'mapTypeId: \'' . $this->map_options['mapTypeId'] . '\',' : '' );
 				if ( isset( $this->map_options['bounds'] ) ) {
 					if ( is_array( $this->map_options['bounds'] ) ) {
 					$output .= '
@@ -313,15 +326,21 @@ if ( ! class_exists( 'CMB2_RS_Map' ) ) {
 				if ( ! empty( $this->geo['polygons'] ) ) {
 					$i = 1;
 					foreach ( $this->geo['polygons'] as $polygon ) {
+						//echo '<pre>' . print_r($polygon, true) . '</pre>';
+						$itemStrokeColor = ( cmb2_rs_check_array_key( $polygon['opts'], 'strokeColor' ) ? $polygon['opts']['strokeColor'] : ( ! empty( $circlestroke ) ? $circlestroke : '#FF0000' ) );
+						$itemStrokeOpacity = ( cmb2_rs_check_array_key( $polygon['opts'], 'strokeOpacity' ) ? $polygon['opts']['strokeOpacity'] : '0.8' );
+						$itemStrokeWeight = ( cmb2_rs_check_array_key( $polygon['opts'], 'strokeWeight' ) ? $polygon['opts']['strokeWeight'] : '2' );
+						$itemFillColor = ( cmb2_rs_check_array_key( $polygon['opts'], 'fillColor' ) ? $polygon['opts']['fillColor'] : ( ! empty( $circlefill ) ? $circlefill : '#FF0000' ) );
+						$itemFillOpacity = ( cmb2_rs_check_array_key( $polygon['opts'], 'fillOpacity' ) ? $polygon['opts']['fillOpacity'] : '0.35' );
 						$output .= '
 							var decodedPolygon' . $i . ' = JSON.parse(\'' . $polygon['path'] . '\');
 							var originalPolygon' . $i . ' = new google.maps.Polygon({
 							  paths: decodedPolygon' . $i . ',
-							  ' . ( ! empty( $circlestroke ) ? 'strokeColor: \'' . $circlestroke . '\',' : 'strokeColor: \'#FF0000\',' ) . '
-							  strokeOpacity: 0.8,
-							  strokeWeight: 2,
-							  ' . ( ! empty( $circlefill ) ? 'fillColor: \'' . $circlefill . '\',' : 'fillColor: \'#FF0000\',' ) . '
-							  fillOpacity: 0.35,
+							  strokeColor: \'' . $itemStrokeColor . '\',
+							  strokeOpacity: ' . $itemStrokeOpacity . ',
+							  strokeWeight: ' . $itemStrokeWeight . ',
+							  fillColor: \'' . $itemFillColor . '\',
+							  fillOpacity: ' . $itemFillOpacity . ',
 							  map: map' . $this->map_options['uid'] . ',
 							});
 							originalPolygon' . $i . '.setMap(map' . $this->map_options['uid'] . ');
@@ -354,7 +373,7 @@ if ( ! class_exists( 'CMB2_RS_Map' ) ) {
 				if ( ! empty( $this->geo['markers'] ) ) {
 					$i = 1;
 					foreach ( $this->geo['markers'] as $marker ) {
-						$output .= '[\'' . addslashes( $marker['tooltip'] ) . '\',' . $marker['lat'] . ', ' . $marker['lng'] . ', \'' . $i . '\'],';
+						$output .= '[\'' . addslashes( $marker['tooltip'] ) . '\',' . $marker['lat'] . ', ' . $marker['lng'] . ', ' . $marker['image'] . ', \'' . $i . '\'],';
 						$i++;
 					}
 				}
@@ -371,7 +390,7 @@ if ( ! class_exists( 'CMB2_RS_Map' ) ) {
 				marker = new google.maps.Marker({
 					position: new google.maps.LatLng(locations[i][1], locations[i][2]),
 					map: map' . $this->map_options['uid'] . ',
-					' . ( $this->map_options['marker'] ? 'icon: image,' : '' ) . '
+					icon: ' . ( $this->map_options['marker'] ? 'image' : 'locations[i][3]' ) . ',
 					animation: google.maps.Animation.DROP
 				});
 				
@@ -379,8 +398,10 @@ if ( ! class_exists( 'CMB2_RS_Map' ) ) {
 				
 				google.maps.event.addListener(marker, \'click\', (function(marker, i) {
 					return function() {
-					infowindow.setContent(locations[i][0]);
-					infowindow.open(map' . $this->map_options['uid'] . ', marker);
+						if ( \'false\' != locations[i][0] ) {
+							infowindow.setContent(locations[i][0]);
+							infowindow.open(map' . $this->map_options['uid'] . ', marker);
+						}
 					}
 				})(marker, i));
 				
