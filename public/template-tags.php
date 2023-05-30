@@ -55,6 +55,7 @@ if ( ! class_exists( 'CMB2_RS_Map' ) ) {
 				'bounds'   => false,
 				'overlay'  => false,
 				'mapTypeId' => '',
+				'domlisteners'  => false,
 			);
 
 			/*
@@ -153,8 +154,18 @@ if ( ! class_exists( 'CMB2_RS_Map' ) ) {
 					' . ( false != $this->map_options['geolocation'] ? '<a class="cmb2-rs-glcontrol" id="glcontrol' . $this->map_options['uid'] . '">' . $this->map_options['geolocation_options']['btn_content'] . '<span>Show My Location</span></a>' : '' ) . '
 					' . ( empty( $enqueue_maps ) ? ( empty( $this->map_options['uid'] ) ? '<script src="https://maps.googleapis.com/maps/api/js?key=' . $api_key . '&amp;libraries=geometry"></script>' : '' ) : '' ) . '
 					<div id="map' . $this->map_options['uid'] . '" style="width: ' . $this->map_options['width'] . '; height: ' . $this->map_options['height'] . '; margin-bottom: 30px;"></div>
-					<script>
-					
+					<script>';
+				if ( false != $this->map_options['domlisteners'] ) {
+					if ( ! empty( $this->geo['markers'] ) ) {
+						foreach ( $this->geo['markers'] as $marker ) {
+							if ( '\'\'' == $marker['domid'] ) {
+								$output .= '
+								const ' . $marker['domid'] . ' = document.getElementById("' . $marker['domid'] . '") as HTMLElement;';
+							}
+						}
+					}
+				}
+				$output .= '
 					' . ( $this->map_options['attach'] ? 'var card' . $this->map_options['uid'] . ' = document.getElementById(\'' . $this->map_options['attach']['id'] . '\');' : '' ) . '
 					' . ( false != $this->map_options['geolocation'] ? 'var glcontrol' . $this->map_options['uid'] . ' = document.getElementById(\'glcontrol' . $this->map_options['uid'] . '\');' : '' ) . '
 					
@@ -398,14 +409,14 @@ if ( ! class_exists( 'CMB2_RS_Map' ) ) {
 				
 					markers.push(marker);
 				
-				google.maps.event.addListener(marker, \'click\', (function(marker, i) {
-					return function() {
-						if ( \'false\' != locations[i][0] ) {
-							infowindow.setContent(locations[i][0]);
-							infowindow.open(map' . $this->map_options['uid'] . ', marker);
+					google.maps.event.addListener(marker, \'click\', (function(marker, i) {
+						return function() {
+							if ( \'false\' != locations[i][0] ) {
+								infowindow.setContent(locations[i][0]);
+								infowindow.open(map' . $this->map_options['uid'] . ', marker);
+							}
 						}
-					}
-				})(marker, i));
+					})(marker, i));
 				
 
 				}
