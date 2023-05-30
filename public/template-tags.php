@@ -95,12 +95,13 @@ if ( ! class_exists( 'CMB2_RS_Map' ) ) {
 			return;
 		}
 
-		public function add_marker( $lat, $lng, $tooltip, $image = '\'\'' ) {
+		public function add_marker( $lat, $lng, $tooltip, $image = '\'\'', $domid = '\'\'' ) {
 			$this->geo['markers'][] = array(
 				'lat'     => $lat,
 				'lng'     => $lng,
 				'tooltip' => $tooltip,
 				'image'   => $image,
+				'domid'   => $domid,
 			);
 			return;
 		}
@@ -373,7 +374,7 @@ if ( ! class_exists( 'CMB2_RS_Map' ) ) {
 				if ( ! empty( $this->geo['markers'] ) ) {
 					$i = 1;
 					foreach ( $this->geo['markers'] as $marker ) {
-						$output .= '[\'' . addslashes( $marker['tooltip'] ) . '\',' . $marker['lat'] . ', ' . $marker['lng'] . ', ' . $marker['image'] . ', \'' . $i . '\'],';
+						$output .= '[\'' . addslashes( $marker['tooltip'] ) . '\',' . $marker['lat'] . ', ' . $marker['lng'] . ', ' . $marker['image'] . ', ' . $marker['domid'] . ', \'' . $i . '\'],';
 						$i++;
 					}
 				}
@@ -387,14 +388,14 @@ if ( ! class_exists( 'CMB2_RS_Map' ) ) {
 				var markers = [];
 				
 				for (i = 0; i < locations.length; i++) {  
-				marker = new google.maps.Marker({
-					position: new google.maps.LatLng(locations[i][1], locations[i][2]),
-					map: map' . $this->map_options['uid'] . ',
-					icon: ' . ( $this->map_options['marker'] ? 'image' : 'locations[i][3]' ) . ',
-					animation: google.maps.Animation.DROP
-				});
+					marker = new google.maps.Marker({
+						position: new google.maps.LatLng(locations[i][1], locations[i][2]),
+						map: map' . $this->map_options['uid'] . ',
+						icon: ' . ( $this->map_options['marker'] ? 'image' : 'locations[i][3]' ) . ',
+						animation: google.maps.Animation.DROP
+					});
 				
-				markers.push(marker);
+					markers.push(marker);
 				
 				google.maps.event.addListener(marker, \'click\', (function(marker, i) {
 					return function() {
