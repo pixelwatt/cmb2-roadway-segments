@@ -184,8 +184,9 @@ if ( ! class_exists( 'CMB2_RS_Map' ) ) {
 					' . ( $controls['fullscreen'] ? 'fullscreenControl: true,' : 'fullscreenControl: false,' ) . '
 					zoomControl: true,
 					' . ( $this->map_options['terrain'] ? 'mapTypeId: \'terrain\',' : '' ) . '
-					rotateControl: false' . ( ! empty( $styles ) ? ',
-					' : '' );
+					rotateControl: false' . ( $this->map_options['mapstyle'] ? ',
+					' : ( ! empty( $styles ) ? ',
+					' : '' ) );
 
 				if ( $this->map_options['mapstyle'] ) {
 					$output .= 'styles: ' . $this->map_options['mapstyle'];
