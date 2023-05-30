@@ -158,9 +158,9 @@ if ( ! class_exists( 'CMB2_RS_Map' ) ) {
 				if ( false != $this->map_options['domlisteners'] ) {
 					if ( ! empty( $this->geo['markers'] ) ) {
 						foreach ( $this->geo['markers'] as $marker ) {
-							if ( '\'\'' == $marker['domid'] ) {
+							if ( '\'\'' != $marker['domid'] ) {
 								$output .= '
-								const ' . $marker['domid'] . ' = document.getElementById("' . $marker['domid'] . '") as HTMLElement;';
+								const ' . $marker['domid'] . ' = document.getElementById("' . $marker['domid'] . '");';
 							}
 						}
 					}
@@ -417,6 +417,23 @@ if ( ! class_exists( 'CMB2_RS_Map' ) ) {
 							}
 						}
 					})(marker, i));
+
+				';
+				if ( false != $this->map_options['domlisteners'] ) {
+					$output .= '
+						if ( \'\' != locations[i][4] ) {
+						google.maps.event.addDomListener(locations[i][4], \'click\', (function(marker, i) {
+							return function() {
+								if ( \'false\' != locations[i][0] ) {
+									infowindow.setContent(locations[i][0]);
+									infowindow.open(map' . $this->map_options['uid'] . ', marker);
+								}
+							}
+						})(marker, i));
+					}
+					';
+				}
+				$output .= '
 				
 
 				}
@@ -651,6 +668,8 @@ if ( ! function_exists( 'snapmap_build_single' ) ) {
 				  infowindow.open(map' . $uid . ', marker);
 				}
 			  })(marker, i));
+
+
 			  
 
 			}
