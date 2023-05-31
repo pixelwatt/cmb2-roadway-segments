@@ -56,6 +56,7 @@ if ( ! class_exists( 'CMB2_RS_Map' ) ) {
 				'overlay'  => false,
 				'mapTypeId' => '',
 				'domlisteners'  => false,
+				'domevent'  => 'click',
 			);
 
 			/*
@@ -422,7 +423,7 @@ if ( ! class_exists( 'CMB2_RS_Map' ) ) {
 				if ( false != $this->map_options['domlisteners'] ) {
 					$output .= '
 						if ( \'\' != locations[i][4] ) {
-						google.maps.event.addDomListener(locations[i][4], \'click\', (function(marker, i) {
+						google.maps.event.addDomListener(locations[i][4], \'' . $this->map_options['domevent'] . '\', (function(marker, i) {
 							return function() {
 								if ( \'false\' != locations[i][0] ) {
 									infowindow.setContent(locations[i][0]);
