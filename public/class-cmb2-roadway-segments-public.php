@@ -555,7 +555,8 @@ class Cmb2_Roadway_Segments_Public {
 				' . ( ! empty( $value['polygon_array'] ) ? 'originalPolygon.setMap(null);' : '' ) . '
 				var polypath = poly.getPath();
 				poly.setMap(null);
-				jQuery("textarea[name=\'' . $field->args['id'] . '[polygon_array_coords]\']").val(JSON.stringify(polypath.g));
+				//console.log(polypath);
+				jQuery("textarea[name=\'' . $field->args['id'] . '[polygon_array_coords]\']").val(JSON.stringify(polypath.Fg));
 
 				  if (typeof snappedPolygon !== \'undefined\') { snappedPolygon.setMap(null); }
 				  snappedPolygon = new google.maps.Polygon({
