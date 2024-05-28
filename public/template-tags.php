@@ -97,13 +97,14 @@ if ( ! class_exists( 'CMB2_RS_Map' ) ) {
 			return;
 		}
 
-		public function add_marker( $lat, $lng, $tooltip, $image = '\'\'', $domid = '\'\'' ) {
+		public function add_marker( $lat, $lng, $tooltip, $image = '\'\'', $domid = '\'\'', $category = '\'Category\'' ) {
 			$this->geo['markers'][] = array(
-				'lat'     => $lat,
-				'lng'     => $lng,
-				'tooltip' => $tooltip,
-				'image'   => $image,
-				'domid'   => $domid,
+				'lat'      => $lat,
+				'lng'      => $lng,
+				'tooltip'  => $tooltip,
+				'image'    => $image,
+				'domid'    => $domid,
+				'category' => $category,
 			);
 			return;
 		}
@@ -387,7 +388,7 @@ if ( ! class_exists( 'CMB2_RS_Map' ) ) {
 				if ( ! empty( $this->geo['markers'] ) ) {
 					$i = 1;
 					foreach ( $this->geo['markers'] as $marker ) {
-						$output .= '[\'' . addslashes( $marker['tooltip'] ) . '\',' . $marker['lat'] . ', ' . $marker['lng'] . ', ' . $marker['image'] . ', ' . $marker['domid'] . ', \'' . $i . '\'],';
+						$output .= '[\'' . addslashes( $marker['tooltip'] ) . '\',' . $marker['lat'] . ', ' . $marker['lng'] . ', ' . $marker['image'] . ', ' . $marker['domid'] . ', ' . $marker['category'] . ', \'' . $i . '\'],';
 						$i++;
 					}
 				}
@@ -405,6 +406,7 @@ if ( ! class_exists( 'CMB2_RS_Map' ) ) {
 						position: new google.maps.LatLng(locations[i][1], locations[i][2]),
 						map: map' . $this->map_options['uid'] . ',
 						icon: ' . ( $this->map_options['marker'] ? 'image' : 'locations[i][3]' ) . ',
+						category: locations[i][5],
 						animation: google.maps.Animation.DROP
 					});
 				
@@ -436,7 +438,19 @@ if ( ! class_exists( 'CMB2_RS_Map' ) ) {
 				}
 				$output .= '
 				
-
+				filterMarkers = function (category) {
+						for (i = 0; i < locations.length; i++) {
+							marker = markers[i];
+							// If is same category or category not picked
+							if (marker.category == category || category.length === 0) {
+								marker.setVisible(true);
+							}
+							// Categories dont match 
+							else {
+								marker.setVisible(false);
+							}
+						}
+					}
 				}
 				
 				
@@ -445,6 +459,7 @@ if ( ! class_exists( 'CMB2_RS_Map' ) ) {
 				$output .= '
 					
 					}
+					
 					google.maps.event.addDomListener(window, \'load\', initMap' . $this->map_options['uid'] . ');
 				</script>
 				';
