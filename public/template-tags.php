@@ -442,7 +442,8 @@ if ( ! class_exists( 'CMB2_RS_Map' ) ) {
 						for (i = 0; i < locations.length; i++) {
 							marker = markers[i];
 							// If is same category or category not picked
-							if (marker.category == category || category.length === 0) {
+							if (marker.category == category || category.length === 0 || marker.category == \'protected\') {
+								
 								marker.setVisible(true);
 							}
 							// Categories dont match 
