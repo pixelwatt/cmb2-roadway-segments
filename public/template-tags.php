@@ -45,6 +45,8 @@ if ( ! class_exists( 'CMB2_RS_Map' ) ) {
 				'width'    => '100%',
 				'height'   => '400px',
 				'zoom'     => '16',
+				'heading'  => '0',
+				'tilt'  => '0',
 				'center'   => false,
 				'marker'   => false,
 				'markers'   => array(),
@@ -176,6 +178,8 @@ if ( ! class_exists( 'CMB2_RS_Map' ) ) {
 					var map' . $this->map_options['uid'] . ' = new google.maps.Map(document.getElementById("map' . $this->map_options['uid'] . '"), {
 					' . $mapcenter . '
 					zoom: ' . $this->map_options['zoom'] . ',
+					' . ( '0' != $this->map_options['heading'] ? 'heading: ' . $this->map_options['heading'] . ',' : '' ) . '
+					' . ( '0' != $this->map_options['tilt'] ? 'tilt: ' . $this->map_options['tilt'] . ',' : '' ) . '
 					scrollwheel: false,
 					' . ( ! empty( $this->map_options['mapTypeId'] ) ? 'mapTypeId: \'' . $this->map_options['mapTypeId'] . '\',' : '' );
 				if ( isset( $this->map_options['bounds'] ) ) {
