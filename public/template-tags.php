@@ -111,11 +111,19 @@ if ( ! class_exists( 'CMB2_RS_Map' ) ) {
 			return;
 		}
 
-		public function add_polygon( $path, $tooltip, $opts = array() ) {
+		public function add_polygon( $path, $tooltip, $opts = array(), $label = '', $label_args = array() ) {
+			$label_defaults = array(
+				'fontFamily' => 'sans-serif',
+				'fontColor' => '#000',
+				'fontSize' => 14,
+				'strokeColor' => '#FFF',
+			);
 			$this->geo['polygons'][] = array(
 				'path'     => $path,
 				'tooltip'  => $tooltip,
 				'opts'	   => $opts,
+				'label'    => $label,
+				'label_args' => wp_parse_args( $label_args, $label_defaults ),
 			);
 			/*
 				$opts = array(
@@ -364,6 +372,22 @@ if ( ! class_exists( 'CMB2_RS_Map' ) ) {
 							});
 							originalPolygon' . $i . '.setMap(map' . $this->map_options['uid'] . ');
 						';
+						if ( ! empty ( $polygon['label'] ) ) {
+							$output .= '
+								var polygon_center' . $i . ' = getPolygonCenter(originalPolygon' . $i . ');
+								var polyLabel' . $i . ' = new MapLabel({
+									text: \'' . strtoupper($polygon['label']) . '\',
+									position: polygon_center' . $i . ',
+									fontSize: ' . $polygon['label_args']['fontSize'] . ',
+									fontColor: \'' . $polygon['label_args']['fontColor'] . '\',
+									fontFamily: \'' . $polygon['label_args']['fontFamily'] . '\',
+									strokeWeight: 2,
+									strokeColor: \'' . $polygon['label_args']['strokeColor'] . '\',
+									minZoom: 16,
+									map: map' . $this->map_options['uid'] . ',
+								});
+							';
+						}
 						$i++;
 					}
 				}
@@ -466,7 +490,23 @@ if ( ! class_exists( 'CMB2_RS_Map' ) ) {
 					}
 					
 					google.maps.event.addDomListener(window, \'load\', initMap' . $this->map_options['uid'] . ');
+					function getPolygonCenter(polygon) {
+						const path = polygon.getPath();
+						let latSum = 0;
+						let lngSum = 0;
+
+						path.forEach(function (point) {
+							latSum += point.lat();
+							lngSum += point.lng();
+						});
+
+						const centerLat = latSum / path.getLength();
+						const centerLng = lngSum / path.getLength();
+
+						return new google.maps.LatLng(centerLat, centerLng);
+					}
 				</script>
+				<script src="' . plugin_dir_url( __FILE__ ) . 'js/maplabel.js"></script>
 				';
 			}
 
