@@ -480,7 +480,36 @@ if ( ! class_exists( 'CMB2_RS_Map' ) ) {
 							}
 						}
 					}
+
+					filterMarkersArray = function (category) {
+						for (i = 0; i < locations.length; i++) {
+							marker = markers[i];
+							console.log( marker.category + \' - \' + category );
+							if (category.length === 0) {
+								marker.setVisible(true);
+							} else {
+								if (marker.category === 0) {
+									marker.setVisible(false);
+								} else {
+									var show = true;
+									category.forEach(function (item) {
+										if ( marker.category.includes( item ) ) {
+											// Do nothing
+										} else {
+											show = false;
+											return;
+										}
+									});
+									marker.setVisible(show);
+								}
+							}
+							
+						}
+					}
 				}
+
+					
+				
 				
 				
 				';
