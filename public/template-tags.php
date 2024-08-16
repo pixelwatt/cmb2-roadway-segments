@@ -56,6 +56,8 @@ if ( ! class_exists( 'CMB2_RS_Map' ) ) {
 				'attach'   => false,
 				'bounds'   => false,
 				'overlay'  => false,
+				'infowindows'  => true,
+				'marker_click_js'  => '',
 				'mapTypeId' => '',
 				'domlisteners'  => false,
 				'domevent'  => 'click',
@@ -435,6 +437,7 @@ if ( ! class_exists( 'CMB2_RS_Map' ) ) {
 						map: map' . $this->map_options['uid'] . ',
 						icon: ' . ( $this->map_options['marker'] ? 'image' : 'locations[i][3]' ) . ',
 						category: locations[i][5],
+						domid: locations[i][4],
 						animation: google.maps.Animation.DROP
 					});
 				
@@ -443,8 +446,8 @@ if ( ! class_exists( 'CMB2_RS_Map' ) ) {
 					google.maps.event.addListener(marker, \'click\', (function(marker, i) {
 						return function() {
 							if ( \'false\' != locations[i][0] ) {
-								infowindow.setContent(locations[i][0]);
-								infowindow.open(map' . $this->map_options['uid'] . ', marker);
+								' . ( $this->map_options['infowindows'] ? 'infowindow.setContent(locations[i][0]); infowindow.open(map' . $this->map_options['uid'] . ', marker);' : '' ) . '
+								' . $this->map_options['marker_click_js'] . '
 							}
 						}
 					})(marker, i));
