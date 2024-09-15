@@ -78,6 +78,7 @@ if ( ! class_exists( 'CMB2_RS_Map' ) ) {
 			// Set up arrays for geo
 			$this->geo['polygons'] = array();
 			$this->geo['polylines'] = array();
+			$this->geo['lines'] = array();
 			$this->geo['circles'] = array();
 			$this->geo['markers'] = array();
 		}
@@ -89,6 +90,13 @@ if ( ! class_exists( 'CMB2_RS_Map' ) ) {
 
 		public function set_plugin_options( $args ) {
 			$this->plugin_options = wp_parse_args( $args, $this->plugin_options );
+			return;
+		}
+
+		public function add_line( $json ) {
+			$this->geo['lines'][] = array(
+				'json'    => $json,
+			);
 			return;
 		}
 
