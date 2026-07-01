@@ -109,7 +109,7 @@ if ( ! class_exists( 'CMB2_RS_Map' ) ) {
 			return;
 		}
 
-		public function add_marker( $lat, $lng, $tooltip, $image = '\'\'', $domid = '\'\'', $category = '\'Category\'' ) {
+		public function add_marker( $lat, $lng, $tooltip, $image = '\'\'', $domid = '\'\'', $category = '\'Category\'', $title = '' ) {
 			$this->geo['markers'][] = array(
 				'lat'      => $lat,
 				'lng'      => $lng,
@@ -117,6 +117,7 @@ if ( ! class_exists( 'CMB2_RS_Map' ) ) {
 				'image'    => $image,
 				'domid'    => $domid,
 				'category' => $category,
+				'title'    => ( ! empty( $title ) ? $title : $tooltip ),
 			);
 			return;
 		}
@@ -426,7 +427,7 @@ if ( ! class_exists( 'CMB2_RS_Map' ) ) {
 				if ( ! empty( $this->geo['markers'] ) ) {
 					$i = 1;
 					foreach ( $this->geo['markers'] as $marker ) {
-						$output .= '[\'' . addslashes( $marker['tooltip'] ) . '\',' . $marker['lat'] . ', ' . $marker['lng'] . ', ' . $marker['image'] . ', ' . $marker['domid'] . ', ' . $marker['category'] . ', \'' . $i . '\'],';
+						$output .= '[\'' . addslashes( $marker['tooltip'] ) . '\',' . $marker['lat'] . ', ' . $marker['lng'] . ', ' . $marker['image'] . ', ' . $marker['domid'] . ', ' . $marker['category'] . ', \'' . $i . '\',\'' . addslashes( $marker['title'] ) . '\'],';
 						$i++;
 					}
 				}
@@ -438,12 +439,20 @@ if ( ! class_exists( 'CMB2_RS_Map' ) ) {
 
 				var marker, i;
 				var markers = [];
+
+				function rsMarkerTitle(html) {
+					if (!html || html === "false") return "";
+					var tmp = document.createElement("div");
+					tmp.innerHTML = html;
+					return (tmp.textContent || tmp.innerText || "").replace(/\\s+/g, " ").trim();
+				}
 				
 				for (i = 0; i < locations.length; i++) {  
 					marker = new google.maps.Marker({
 						position: new google.maps.LatLng(locations[i][1], locations[i][2]),
 						map: map' . $this->map_options['uid'] . ',
 						icon: ' . ( $this->map_options['marker'] ? 'image' : 'locations[i][3]' ) . ',
+						title: rsMarkerTitle(locations[i][7]),
 						category: locations[i][5],
 						domid: locations[i][4],
 						animation: google.maps.Animation.DROP
