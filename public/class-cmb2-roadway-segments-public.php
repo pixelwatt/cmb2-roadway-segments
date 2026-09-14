@@ -941,7 +941,7 @@ class Cmb2_Roadway_Segments_Public {
 
 			if ( 1 != $enqueue_maps ) {
 				// Lets load up some Google Maps JS
-				wp_enqueue_script( 'google-maps-drawing', 'https://maps.googleapis.com/maps/api/js?v=weekly&libraries=drawing,' . ( 1 == $disable_geo ? '' : 'places,' ) . 'geometry&key=' . $api_key, array( 'jquery' ), null, false );
+				wp_enqueue_script( 'google-maps-drawing', 'https://maps.googleapis.com/maps/api/js?v=3.64&libraries=drawing,' . ( 1 == $disable_geo ? '' : 'places,' ) . 'geometry&key=' . $api_key, array( 'jquery' ), null, false );
 			}
 		}
 	}
